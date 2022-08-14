@@ -1,0 +1,4 @@
+#define ONESHOT_TAP_TOGGLE 2
+#define ONESHOT_TIMEOUT 250
+
+#define TAPPING_TERM 80
