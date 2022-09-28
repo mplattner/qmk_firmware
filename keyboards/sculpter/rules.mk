@@ -22,3 +22,5 @@ BLUETOOTH_ENABLE = no       # Enable Bluetooth
 AUDIO_ENABLE = no           # Audio output
 
 AUTO_SHIFT_ENABLE = yes
+
+TAP_DANCE_ENABLE = yes
