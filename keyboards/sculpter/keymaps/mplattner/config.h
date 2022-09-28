@@ -7,4 +7,4 @@
 #define TAPPING_TOGGLE 2
 
 // tap dance duration
-#define TAPPING_TERM 250
+//#define TAPPING_TERM 250
