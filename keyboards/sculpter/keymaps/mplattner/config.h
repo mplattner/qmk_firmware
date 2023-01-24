@@ -9,3 +9,6 @@
 
 // tap dance duration
 //#define TAPPING_TERM 250
+
+// trying to fix issue that occurs since enabling AUTO_SHIFT_MODIFIERS, see https://github.com/qmk/qmk_firmware/issues/19671
+#define TAP_CODE_DELAY 10
