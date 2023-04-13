@@ -279,11 +279,6 @@ static void autoshift_end(uint16_t keycode, uint16_t now, bool matrix_trigger, k
         autoshift_release_user(autoshift_lastkey, autoshift_flags.lastshifted, record);
         autoshift_flush_shift();
     } else {
-#    if TAP_CODE_DELAY > 0
-        send_keyboard_report();
-        wait_ms(TAP_CODE_DELAY);
-#    endif
-
         // Release after keyrepeat.
         autoshift_release_user(keycode, get_autoshift_shift_state(keycode), record);
         if (keycode == autoshift_lastkey) {
@@ -295,11 +290,6 @@ static void autoshift_end(uint16_t keycode, uint16_t now, bool matrix_trigger, k
     }
     // Roll the autoshift_time forward for detecting tap-and-hold.
     autoshift_time = now;
-
-#    if TAP_CODE_DELAY > 0
-        send_keyboard_report();
-        wait_ms(TAP_CODE_DELAY);
-#    endif
 }
 
 /** \brief Simulates auto-shifted key releases when timeout is hit
