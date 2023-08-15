@@ -3,6 +3,9 @@
     "[json]": {
         "editor.formatOnSave": false
     },
+    "clangd.arguments": [
+        "--header-insertion=never"
+    ],
     "[markdown]": {
         "editor.trimAutoWhitespace": false,
         "files.trimTrailingWhitespace": false
