@@ -3,6 +3,8 @@
 
 #define AUTO_SHIFT_TIMEOUT 142
 
+#define AUTO_SHIFT_ENTER 1
+
 //#define DOUBLE_REPORT
 
 // number of times TT(layer) needs to be tapped to toggle layer
