@@ -184,3 +184,14 @@ void autoshift_release_user(uint16_t keycode, bool shifted, keyrecord_t *record)
     // keycode & 0xFF would be fine.
     unregister_code16((IS_RETRO(keycode)) ? keycode & 0xFF : keycode);
 }
+
+// needed to make sure the left OSM ctrl is registered as OSM and not a regular key press (fixes AUTO_SHIFT_MODIFIERS issue #19671)
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case OSM(MOD_LCTL):
+        case KC_LCTL:
+            return 300;
+        default:
+            return TAPPING_TERM;
+    }
+}
