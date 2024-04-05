@@ -15,6 +15,8 @@
  */
 #include QMK_KEYBOARD_H
 
+#include "print.h"
+
 #define TH(key, hold_key) register_code16((!shifted) ? key : hold_key); return;
 #define THU(key, hold_key) unregister_code16((!shifted) ? key : hold_key); return;
 
@@ -85,15 +87,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 void autoshift_press_user(uint16_t keycode, bool shifted, keyrecord_t *record) {
+
+    print("\n");
+    uprintf("keycode: %d\n", keycode);
+
     bool l_shift_held = get_mods() & MOD_BIT(KC_LSFT);
     bool l_shift_held_osm = get_oneshot_mods() & MOD_BIT(KC_LSFT);
     bool r_shift_held = get_mods() & MOD_BIT(KC_RSFT);
     bool r_shift_held_osm = get_oneshot_mods() & MOD_BIT(KC_RSFT);
 
-    bool shift_held = l_shift_held || r_shift_held || l_shift_held_osm || r_shift_held_osm;
+    bool l_ctrl_held = get_mods() & MOD_BIT(KC_LCTL);
+    bool l_ctrl_held_osm = get_oneshot_mods() & MOD_BIT(KC_LCTL);
 
-    if (IS_LAYER_ON(_CODE) && !shift_held) {
-        //set_oneshot_mods(get_oneshot_mods() & (~MOD_BIT(KC_LSFT)))
+    uprintf("l_ctrl_held: %d\n", l_ctrl_held);
+    uprintf("l_ctrl_held_osm: %d\n", l_ctrl_held_osm);
+
+    bool shift_held = l_shift_held || r_shift_held || l_shift_held_osm || r_shift_held_osm;
+    if (IS_LAYER_ON(_CODE)) {
+
+        uprintf("shifted: %d\n", shifted);
+        uprintf("shift_held: %d\n", shift_held);
 
         switch(keycode) {
             case KC_Q: TH(KC_Q, C(KC_W));
@@ -137,14 +150,14 @@ void autoshift_press_user(uint16_t keycode, bool shifted, keyrecord_t *record) {
 }
 
 void autoshift_release_user(uint16_t keycode, bool shifted, keyrecord_t *record) {
-    bool l_shift_held = get_mods() & MOD_BIT(KC_LSFT);
-    bool l_shift_held_osm = get_oneshot_mods() & MOD_BIT(KC_LSFT);
-    bool r_shift_held = get_mods() & MOD_BIT(KC_RSFT);
-    bool r_shift_held_osm = get_oneshot_mods() & MOD_BIT(KC_RSFT);
+    // bool l_shift_held = get_mods() & MOD_BIT(KC_LSFT);
+    // bool l_shift_held_osm = get_oneshot_mods() & MOD_BIT(KC_LSFT);
+    // bool r_shift_held = get_mods() & MOD_BIT(KC_RSFT);
+    // bool r_shift_held_osm = get_oneshot_mods() & MOD_BIT(KC_RSFT);
 
-    bool shift_held = l_shift_held || r_shift_held || l_shift_held_osm || r_shift_held_osm;
+    // bool shift_held = l_shift_held || r_shift_held || l_shift_held_osm || r_shift_held_osm;
 
-    if (IS_LAYER_ON(_CODE) && !shift_held) {
+    if (IS_LAYER_ON(_CODE)) {
         switch(keycode) {
             case KC_Q: THU(KC_Q, C(KC_W));
             case KC_W: THU(KC_W, KC_ESC);
@@ -183,6 +196,13 @@ void autoshift_release_user(uint16_t keycode, bool shifted, keyrecord_t *record)
     // The IS_RETRO check isn't really necessary here, always using
     // keycode & 0xFF would be fine.
     unregister_code16((IS_RETRO(keycode)) ? keycode & 0xFF : keycode);
+}
+
+void keyboard_post_init_user(void) {
+  // Customise these values to desired behaviour
+  //debug_enable=true;
+  //debug_matrix=true;
+  //debug_keyboard=true;
 }
 
 // needed to make sure the left OSM ctrl is registered as OSM and not a regular key press (fixes AUTO_SHIFT_MODIFIERS issue #19671)
