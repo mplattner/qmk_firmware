@@ -49,7 +49,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       KC_ESC, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, KC_PSCR, KC_SCRL, KC_PAUS, QK_RBT,
       KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS, KC_EQL, KC_BSPC, KC_DEL, KC_HOME,
       KC_TAB, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, KC_LBRC, KC_RBRC, KC_NUBS, KC_END,
-      OSM(MOD_LCTL), KC_A, KC_S, KC_D, KC_F, KC_G, KC_SPC, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT, C(KC_V), KC_PGUP,
+      OSM(MOD_LCTL), KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT, C(KC_V), KC_PGUP,
       OSM(MOD_RSFT), KC_NUBS, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, OSM(MOD_RSFT), KC_UP, KC_PGDN,
       OSM(MOD_LCTL), OSM(MOD_LGUI), OSM(MOD_LALT), LT(_NUM, KC_SPC), LT(_ALTGR, KC_SPC), TG(_CODE), TG(_ALTGR), A(KC_SPC), KC_LEFT, KC_DOWN, KC_RGHT
     ),
@@ -81,8 +81,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 bool get_custom_auto_shifted_key(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case KC_SPC:
-            return true;
+        // case KC_SPC:
+        //     return true;
         default:
             return false;
     }
@@ -125,10 +125,10 @@ void autoshift_press_user(uint16_t keycode, bool shifted, keyrecord_t *record) {
     bool shift_held = l_shift_held || r_shift_held || l_shift_held_osm || r_shift_held_osm;
     if (IS_LAYER_ON(_BASE)) {
         if (shift_held) {
-            add_weak_mods(MOD_BIT(KC_LSFT));
+            //add_weak_mods(MOD_BIT(KC_LSFT));
         }
         switch (keycode) {
-            case KC_SPC: TH(KC_SPC, KC_H);
+            //case KC_SPC: TH(KC_SPC, KC_H);
         }
     }
     else if (IS_LAYER_ON(_CODE)) {
@@ -187,7 +187,7 @@ void autoshift_release_user(uint16_t keycode, bool shifted, keyrecord_t *record)
 
     if (IS_LAYER_ON(_BASE)) {
         switch (keycode) {
-            case KC_SPC: THU(KC_SPC, KC_H);
+            //case KC_SPC: THU(KC_SPC, KC_H);
         }
     }
     else if (IS_LAYER_ON(_CODE)) {
