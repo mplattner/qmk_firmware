@@ -20,6 +20,8 @@
 #define TH(key, hold_key) register_code16((!shifted) ? key : hold_key); return;
 #define THU(key, hold_key) unregister_code16((!shifted) ? key : hold_key); return;
 
+//#define TD_C ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_c_finished, NULL)
+
 // Defines names for use in layer keycodes and the keymap
 enum layer_names {
     _BASE,
@@ -31,6 +33,109 @@ enum layer_names {
 enum custom_keycodes {
     P_PWD = SAFE_RANGE,
     P_LAY
+};
+
+enum custom_tap_dance {
+    TD_Z,
+    TD_X,
+    TD_C,
+    TD_V,
+    TD_F,
+    TD_T,
+    TD_W,
+    TD_A
+};
+
+void td_z_finished(tap_dance_state_t *state, void *user_data) {
+    if (state->count == 1) {
+        // Single tap → 'x'
+        tap_code(KC_Z);
+    } else if (state->count == 2) {
+        // Double tap → Ctrl + x
+        tap_code16(C(KC_Z));
+    }
+}
+
+void td_x_finished(tap_dance_state_t *state, void *user_data) {
+    if (state->count == 1) {
+        // Single tap → 'x'
+        tap_code(KC_X);
+    } else if (state->count == 2) {
+        // Double tap → Ctrl + x
+        tap_code16(C(KC_X));
+    }
+}
+
+void td_c_finished(tap_dance_state_t *state, void *user_data) {
+    if (state->count == 1) {
+        // Single tap → 'x'
+        tap_code(KC_C);
+    } else if (state->count == 2) {
+        // Double tap → Ctrl + x
+        tap_code16(C(KC_C));
+    }
+}
+
+void td_v_finished(tap_dance_state_t *state, void *user_data) {
+    if (state->count == 1) {
+        // Single tap → 'x'
+        tap_code(KC_V);
+    } else if (state->count == 2) {
+        // Double tap → Ctrl + x
+        tap_code16(C(KC_V));
+    }
+}
+
+void td_f_finished(tap_dance_state_t *state, void *user_data) {
+    if (state->count == 1) {
+        // Single tap → 'x'
+        tap_code(KC_F);
+    } else if (state->count == 2) {
+        // Double tap → Ctrl + x
+        tap_code16(C(KC_F));
+    }
+}
+
+void td_t_finished(tap_dance_state_t *state, void *user_data) {
+    if (state->count == 1) {
+        // Single tap → 'x'
+        tap_code(KC_T);
+    } else if (state->count == 2) {
+        // Double tap → Ctrl + x
+        tap_code16(C(KC_T));
+    }
+}
+
+void td_w_finished(tap_dance_state_t *state, void *user_data) {
+    if (state->count == 1) {
+        // Single tap → 'x'
+        tap_code(KC_W);
+    } else if (state->count == 2) {
+        // Double tap → Ctrl + x
+        tap_code16(C(KC_W));
+    }
+}
+
+void td_a_finished(tap_dance_state_t *state, void *user_data) {
+    if (state->count == 1) {
+        // Single tap → 'x'
+        tap_code(KC_A);
+    } else if (state->count == 2) {
+        // Double tap → Ctrl + x
+        tap_code16(C(KC_A));
+    }
+}
+
+tap_dance_action_t tap_dance_actions[] = {
+    // Tap once for Escape, twice for Caps Lock
+    [TD_Z] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_z_finished, NULL),
+    [TD_X] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_x_finished, NULL),
+    [TD_C] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_c_finished, NULL),
+    [TD_V] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_v_finished, NULL),
+    [TD_F] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_f_finished, NULL),
+    [TD_T] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_t_finished, NULL),
+    [TD_W] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_w_finished, NULL),
+    [TD_A] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_a_finished, NULL)
 };
 
 /*
@@ -48,9 +153,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE] = LAYOUT(
       KC_ESC, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, KC_PSCR, KC_SCRL, KC_PAUS, QK_RBT,
       KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS, KC_EQL, KC_BSPC, KC_DEL, KC_HOME,
-      KC_TAB, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, KC_LBRC, KC_RBRC, KC_NUBS, KC_END,
-      OSM(MOD_LCTL), KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT, C(KC_V), KC_PGUP,
-      OSM(MOD_RSFT), KC_NUBS, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, OSM(MOD_RSFT), KC_UP, KC_PGDN,
+      KC_TAB, KC_Q, TD(TD_W), KC_E, KC_R, TD(TD_T), KC_Y, KC_U, KC_I, KC_O, KC_P, KC_LBRC, KC_RBRC, KC_NUBS, KC_END,
+      OSM(MOD_LCTL), TD(TD_A), KC_S, KC_D, TD(TD_F), KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT, C(KC_V), KC_PGUP,
+      OSM(MOD_RSFT), KC_NUBS, TD(TD_Z), TD(TD_X), TD(TD_C), TD(TD_V), KC_B, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, OSM(MOD_RSFT), KC_UP, KC_PGDN,
       OSM(MOD_LCTL), OSM(MOD_LGUI), OSM(MOD_LALT), LT(_NUM, KC_SPC), LT(_ALTGR, KC_SPC), TG(_CODE), TG(_ALTGR), A(KC_SPC), KC_LEFT, KC_DOWN, KC_RGHT
     ),
     [_CODE] = LAYOUT(

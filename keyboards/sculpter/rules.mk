@@ -23,4 +23,4 @@ AUDIO_ENABLE = no           # Audio output
 
 AUTO_SHIFT_ENABLE = yes
 
-TAP_DANCE_ENABLE = no
+TAP_DANCE_ENABLE = yes
