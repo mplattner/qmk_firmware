@@ -56,8 +56,6 @@ void td_z_finished(tap_dance_state_t *state, void *user_data) {
         tap_code(KC_Z);
     } else if (state->count == 2) {
         tap_code16(C(KC_Z));
-    } else if (state->count == 3) {
-        tap_code16(S(KC_Z));
     }
 }
 
@@ -66,8 +64,6 @@ void td_y_finished(tap_dance_state_t *state, void *user_data) {
         tap_code(KC_Y);
     } else if (state->count == 2) {
         tap_code16(C(KC_Y));
-    } else if (state->count == 3) {
-        tap_code16(S(KC_Y));
     }
 }
 
@@ -76,8 +72,6 @@ void td_x_finished(tap_dance_state_t *state, void *user_data) {
         tap_code(KC_X);
     } else if (state->count == 2) {
         tap_code16(C(KC_X));
-    } else if (state->count == 3) {
-        tap_code16(S(KC_X));
     }
 }
 
@@ -87,9 +81,6 @@ void td_c_finished(tap_dance_state_t *state, void *user_data) {
     } else if (state->count == 2) {
         //tap_code(KC_2);
         tap_code16(C(KC_C));
-    } else if (state->count == 3) {
-        //tap_code(KC_3);
-        tap_code16(S(KC_C));
     }
 }
 
@@ -98,8 +89,6 @@ void td_v_finished(tap_dance_state_t *state, void *user_data) {
         tap_code(KC_V);
     } else if (state->count == 2) {
         tap_code16(C(KC_V));
-    } else if (state->count == 3) {
-        tap_code16(S(KC_V));
     }
 }
 
@@ -108,8 +97,6 @@ void td_f_finished(tap_dance_state_t *state, void *user_data) {
         tap_code(KC_F);
     } else if (state->count == 2) {
         tap_code16(C(KC_F));
-    } else if (state->count == 3) {
-        tap_code16(S(KC_F));
     }
 }
 
@@ -118,8 +105,6 @@ void td_t_finished(tap_dance_state_t *state, void *user_data) {
         tap_code(KC_T);
     } else if (state->count == 2) {
         tap_code16(C(KC_T));
-    } else if (state->count == 3) {
-        tap_code16(S(KC_T));
     }
 }
 
@@ -128,8 +113,6 @@ void td_w_finished(tap_dance_state_t *state, void *user_data) {
         tap_code(KC_W);
     } else if (state->count == 2) {
         tap_code16(C(KC_W));
-    } else if (state->count == 3) {
-        tap_code16(S(KC_W));
     }
 }
 
@@ -146,8 +129,6 @@ void td_a_finished(tap_dance_state_t *state, void *user_data) {
         tap_code(KC_A);
     } else if (state->count == 2) {
         tap_code16(C(KC_A));
-    } else if (state->count == 3) {
-        tap_code16(S(KC_A));
     }
 }
 
