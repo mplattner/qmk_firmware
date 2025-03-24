@@ -42,8 +42,10 @@ enum custom_tap_dance {
     TD_C,
     TD_V,
     TD_A,
+    TD_S,
     TD_F,
     TD_W,
+    TD_E,
     TD_T,
     TD_Y,
     //TD_SPC
@@ -131,6 +133,14 @@ void td_w_finished(tap_dance_state_t *state, void *user_data) {
     }
 }
 
+void td_e_finished(tap_dance_state_t *state, void *user_data) {
+    if (state->count == 1) {
+        tap_code(KC_E);
+    } else if (state->count == 2) {
+        tap_code(KC_ENTER);
+    }
+}
+
 void td_a_finished(tap_dance_state_t *state, void *user_data) {
     if (state->count == 1) {
         tap_code(KC_A);
@@ -138,6 +148,14 @@ void td_a_finished(tap_dance_state_t *state, void *user_data) {
         tap_code16(C(KC_A));
     } else if (state->count == 3) {
         tap_code16(S(KC_A));
+    }
+}
+
+void td_s_finished(tap_dance_state_t *state, void *user_data) {
+    if (state->count == 1) {
+        tap_code(KC_S);
+    } else if (state->count == 2) {
+        tap_code(KC_TAB);
     }
 }
 
@@ -160,9 +178,11 @@ tap_dance_action_t tap_dance_actions[] = {
     [TD_V] = ACTION_TAP_DANCE_FN(td_v_finished),
 
     [TD_A] = ACTION_TAP_DANCE_FN(td_a_finished),
+    [TD_S] = ACTION_TAP_DANCE_FN(td_s_finished),
     [TD_F] = ACTION_TAP_DANCE_FN(td_f_finished),
 
     [TD_W] = ACTION_TAP_DANCE_FN(td_w_finished),
+    [TD_E] = ACTION_TAP_DANCE_FN(td_e_finished),
     [TD_T] = ACTION_TAP_DANCE_FN(td_t_finished),
     [TD_Y] = ACTION_TAP_DANCE_FN(td_y_finished),
 
@@ -184,8 +204,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE] = LAYOUT(
       KC_ESC, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, KC_PSCR, KC_SCRL, KC_PAUS, QK_RBT,
       KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS, KC_EQL, KC_BSPC, KC_DEL, KC_HOME,
-      KC_TAB, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, KC_LBRC, KC_RBRC, KC_NUBS, KC_END,
-      OSM(MOD_LCTL), KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT, C(KC_V), KC_PGUP,
+      KC_TAB, KC_Q, TD(TD_W), TD(TD_E), KC_R, TD(TD_T), TD(TD_Y), KC_U, KC_I, KC_O, KC_P, KC_LBRC, KC_RBRC, KC_NUBS, KC_END,
+      OSM(MOD_LCTL), TD(TD_A), TD(TD_S), KC_D, TD(TD_F), KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT, C(KC_V), KC_PGUP,
       OSM(MOD_RSFT), KC_NUBS, TD(TD_Z), TD(TD_X), TD(TD_C), TD(TD_V), KC_B, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, OSM(MOD_RSFT), KC_UP, KC_PGDN,
       OSM(MOD_LCTL), OSM(MOD_LGUI), OSM(MOD_LALT), /*TD(TD_SPC)*/KC_SPC, LT(_ALTGR, KC_SPC), TG(_CODE), TG(_ALTGR), A(KC_SPC), KC_LEFT, KC_DOWN, KC_RGHT
     ),
@@ -198,7 +218,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       OSM(MOD_LCTL), OSM(MOD_LGUI), OSM(MOD_LALT), LT(_NUM, KC_SPC), MT(MOD_RSFT, KC_SPC), TG(_CODE), TG(_ALTGR), A(KC_SPC), KC_LEFT, KC_DOWN, KC_RGHT
     ),
     [_ALTGR] = LAYOUT(
-      KC_ESC, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_MPLY, KC_MUTE, KC_VOLD, KC_VOLU, KC_PSCR, KC_SCRL, KC_MPLY, QK_BOOT,
+      KC_ESC, KC_F1, MEH(KC_F2), MEH(KC_F3), MEH(KC_F4), KC_F5, KC_F6, KC_F7, KC_F8, KC_MPLY, KC_MUTE, KC_VOLD, KC_VOLU, KC_PSCR, KC_SCRL, KC_MPLY, QK_BOOT,
       KC_GRV, KC_1, KC_2, KC_NUHS, ALGR(KC_4), KC_5, KC_6, KC_7, KC_8, KC_9, KC_MPRV, KC_MNXT, KC_EQL, KC_BSPC, KC_DEL, KC_HOME,
       KC_TAB, A(KC_F4), KC_ESC, KC_ENT, KC_BSPC, KC_TAB, KC_Y, ALGR(KC_U), KC_UP, ALGR(KC_O), P_PWD, KC_LBRC, KC_RBRC, KC_NUBS, KC_END,
       OSM(MOD_LCTL), ALGR(KC_A), ALGR(KC_S), KC_DEL, C(S(KC_SPC)), KC_TAB, C(KC_Z), KC_LEFT, KC_DOWN, KC_RIGHT, KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT, KC_INS, KC_PGUP,
@@ -226,9 +246,11 @@ bool get_custom_auto_shifted_key(uint16_t keycode, keyrecord_t *record) {
         case TD(TD_V):
 
         case TD(TD_A):
+        case TD(TD_S):
         case TD(TD_F):
 
         case TD(TD_W):
+        case TD(TD_E):
         case TD(TD_T):
         case TD(TD_Y):
             return true;
