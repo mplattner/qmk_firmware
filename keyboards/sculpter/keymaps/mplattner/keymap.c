@@ -51,31 +51,21 @@ enum custom_tap_dance {
     //TD_SPC
 };
 
-void td_z_finished(tap_dance_state_t *state, void *user_data) {
+void td_z_finished(tap_dance_state_t *state, void *user_data) { // Z
     if (state->count == 1) {
         tap_code(KC_Z);
     } else if (state->count == 2) {
         tap_code16(C(KC_Z));
     }
 }
-
-void td_y_finished(tap_dance_state_t *state, void *user_data) {
-    if (state->count == 1) {
-        tap_code(KC_Y);
-    } else if (state->count == 2) {
-        tap_code16(C(KC_Y));
-    }
-}
-
-void td_x_finished(tap_dance_state_t *state, void *user_data) {
+void td_x_finished(tap_dance_state_t *state, void *user_data) { // X
     if (state->count == 1) {
         tap_code(KC_X);
     } else if (state->count == 2) {
         tap_code16(C(KC_X));
     }
 }
-
-void td_c_finished(tap_dance_state_t *state, void *user_data) {
+void td_c_finished(tap_dance_state_t *state, void *user_data) { // C
     if (state->count == 1) {
         tap_code(KC_C);
     } else if (state->count == 2) {
@@ -83,8 +73,7 @@ void td_c_finished(tap_dance_state_t *state, void *user_data) {
         tap_code16(C(KC_C));
     }
 }
-
-void td_v_finished(tap_dance_state_t *state, void *user_data) {
+void td_v_finished(tap_dance_state_t *state, void *user_data) { // V
     if (state->count == 1) {
         tap_code(KC_V);
     } else if (state->count == 2) {
@@ -92,51 +81,55 @@ void td_v_finished(tap_dance_state_t *state, void *user_data) {
     }
 }
 
-void td_f_finished(tap_dance_state_t *state, void *user_data) {
+
+void td_a_finished(tap_dance_state_t *state, void *user_data) { // A
+    if (state->count == 1) {
+        tap_code(KC_A);
+    } else if (state->count == 3) {
+        tap_code16(C(KC_A));
+    }
+}
+void td_s_finished(tap_dance_state_t *state, void *user_data) { // S
+    if (state->count == 1) {
+        tap_code(KC_S);
+    } else if (state->count == 3) {
+        tap_code(KC_TAB);
+    }
+}
+void td_f_finished(tap_dance_state_t *state, void *user_data) { // F
     if (state->count == 1) {
         tap_code(KC_F);
-    } else if (state->count == 2) {
+    } else if (state->count == 3) {
         tap_code16(C(KC_F));
     }
 }
 
-void td_t_finished(tap_dance_state_t *state, void *user_data) {
-    if (state->count == 1) {
-        tap_code(KC_T);
-    } else if (state->count == 2) {
-        tap_code16(C(KC_T));
-    }
-}
-
-void td_w_finished(tap_dance_state_t *state, void *user_data) {
+void td_w_finished(tap_dance_state_t *state, void *user_data) { // W
     if (state->count == 1) {
         tap_code(KC_W);
     } else if (state->count == 2) {
         tap_code16(C(KC_W));
     }
 }
-
-void td_e_finished(tap_dance_state_t *state, void *user_data) {
+void td_e_finished(tap_dance_state_t *state, void *user_data) { // E
     if (state->count == 1) {
         tap_code(KC_E);
-    } else if (state->count == 2) {
+    } else if (state->count == 3) {
         tap_code(KC_ENTER);
     }
 }
-
-void td_a_finished(tap_dance_state_t *state, void *user_data) {
+void td_t_finished(tap_dance_state_t *state, void *user_data) { // T
     if (state->count == 1) {
-        tap_code(KC_A);
-    } else if (state->count == 2) {
-        tap_code16(C(KC_A));
+        tap_code(KC_T);
+    } else if (state->count == 3) {
+        tap_code16(C(KC_T));
     }
 }
-
-void td_s_finished(tap_dance_state_t *state, void *user_data) {
+void td_y_finished(tap_dance_state_t *state, void *user_data) { // Y
     if (state->count == 1) {
-        tap_code(KC_S);
+        tap_code(KC_Y);
     } else if (state->count == 2) {
-        tap_code(KC_TAB);
+        tap_code16(C(KC_Y));
     }
 }
 
