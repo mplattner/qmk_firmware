@@ -20,7 +20,34 @@
 #define TH(key, hold_key) register_code16((!shifted) ? key : hold_key); return;
 #define THU(key, hold_key) unregister_code16((!shifted) ? key : hold_key); return;
 
-//#define TD_C ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_c_finished, NULL)
+typedef struct {
+    uint16_t kc1;
+    uint16_t kc2;
+    uint16_t kc3;
+} tap_dance_triple_t;
+
+#define ACTION_TAP_DANCE_TRIPLE(kc1, kc2, kc3) \
+    { .fn = {NULL, tap_dance_triple_finished, NULL, NULL}, .user_data = (void *)&((tap_dance_triple_t){kc1, kc2, kc3}), }
+
+void tap_dance_triple_finished(tap_dance_state_t *state, void *user_data) {
+    tap_dance_triple_t *triple = (tap_dance_triple_t *)user_data;
+
+    if (state->count == 1) {
+        tap_code16(triple->kc1);
+    }
+    else if (state->count == 2) {
+        if (triple->kc2 == KC_NO) {
+            tap_code16(triple->kc1);
+            tap_code16(triple->kc1);
+        }
+        else {
+            tap_code16(triple->kc2);
+        }
+    }
+    else if (state->count == 3) {
+        tap_code16(triple->kc3);
+    }
+}
 
 // Defines names for use in layer keycodes and the keymap
 enum layer_names {
@@ -35,153 +62,61 @@ enum custom_keycodes {
     P_LAY
 };
 
-// very strange bug: index 0-4 work as intended, the 5th TD mis-behaves (sends multiple keys)
 enum custom_tap_dance {
-    TD_Z,
+    TDL_Z,
+    TDL_X,
+    TDL_C,
+    TDL_V,
+    TDL_A,
+    TDL_S,
+    TDL_F,
+    TDL_Q,
+    TDL_W,
+    TDL_E,
+    TDL_T,
+    TDL_Y,
+};
+enum custom_tap_dance_short {
+    TD_Z = QK_TAP_DANCE,
     TD_X,
     TD_C,
     TD_V,
     TD_A,
     TD_S,
     TD_F,
+    TD_Q,
     TD_W,
     TD_E,
     TD_T,
     TD_Y,
-    //TD_SPC
 };
-
-void td_z_finished(tap_dance_state_t *state, void *user_data) { // Z
-    if (state->count == 1) {
-        tap_code(KC_Z);
-    } else if (state->count == 2) {
-        tap_code16(C(KC_Z));
-    }
-}
-void td_x_finished(tap_dance_state_t *state, void *user_data) { // X
-    if (state->count == 1) {
-        tap_code(KC_X);
-    } else if (state->count == 2) {
-        tap_code16(C(KC_X));
-    }
-}
-void td_c_finished(tap_dance_state_t *state, void *user_data) { // C
-    if (state->count == 1) {
-        tap_code(KC_C);
-    } else if (state->count == 2) {
-        //tap_code(KC_2);
-        tap_code16(C(KC_C));
-    }
-}
-void td_v_finished(tap_dance_state_t *state, void *user_data) { // V
-    if (state->count == 1) {
-        tap_code(KC_V);
-    } else if (state->count == 2) {
-        tap_code16(C(KC_V));
-    }
-}
-
-
-void td_a_finished(tap_dance_state_t *state, void *user_data) { // A
-    if (state->count == 1) {
-        tap_code(KC_A);
-    } else if (state->count == 3) {
-        tap_code16(C(KC_A));
-    }
-}
-void td_s_finished(tap_dance_state_t *state, void *user_data) { // S
-    if (state->count == 1) {
-        tap_code(KC_S);
-    } else if (state->count == 3) {
-        tap_code(KC_TAB);
-    }
-}
-void td_f_finished(tap_dance_state_t *state, void *user_data) { // F
-    if (state->count == 1) {
-        tap_code(KC_F);
-    } else if (state->count == 3) {
-        tap_code16(C(KC_F));
-    }
-}
-
-void td_w_finished(tap_dance_state_t *state, void *user_data) { // W
-    if (state->count == 1) {
-        tap_code(KC_W);
-    } else if (state->count == 2) {
-        tap_code16(C(KC_W));
-    }
-}
-void td_e_finished(tap_dance_state_t *state, void *user_data) { // E
-    if (state->count == 1) {
-        tap_code(KC_E);
-    } else if (state->count == 3) {
-        tap_code(KC_ENTER);
-    }
-}
-void td_t_finished(tap_dance_state_t *state, void *user_data) { // T
-    if (state->count == 1) {
-        tap_code(KC_T);
-    } else if (state->count == 3) {
-        tap_code16(C(KC_T));
-    }
-}
-void td_y_finished(tap_dance_state_t *state, void *user_data) { // Y
-    if (state->count == 1) {
-        tap_code(KC_Y);
-    } else if (state->count == 2) {
-        tap_code16(C(KC_Y));
-    }
-}
-
-void td_spc_finished(tap_dance_state_t *state, void *user_data) {
-    if (state->count == 1) {
-        tap_code(KC_SPC);
-    } else if (state->count == 2) {
-        //add_weak_mods(MOD_BIT(KC_LSFT));
-        //add_mods(MOD_BIT(KC_LSFT));
-        add_oneshot_mods(MOD_BIT(KC_LSFT));
-    } else if (state->count == 3) {
-        add_weak_mods(MOD_BIT(KC_LCTL));
-    }
-}
 
 tap_dance_action_t tap_dance_actions[] = {
-    [TD_Z] = ACTION_TAP_DANCE_FN(td_z_finished),
-    [TD_X] = ACTION_TAP_DANCE_FN(td_x_finished),
-    [TD_C] = ACTION_TAP_DANCE_FN(td_c_finished),
-    [TD_V] = ACTION_TAP_DANCE_FN(td_v_finished),
+    [TDL_Z] = ACTION_TAP_DANCE_DOUBLE(KC_Z, C(KC_Z)),
+    [TDL_X] = ACTION_TAP_DANCE_DOUBLE(KC_X, C(KC_X)),
+    [TDL_C] = ACTION_TAP_DANCE_DOUBLE(KC_C, C(KC_C)),
+    [TDL_V] = ACTION_TAP_DANCE_DOUBLE(KC_V, C(KC_V)),
 
-    [TD_A] = ACTION_TAP_DANCE_FN(td_a_finished),
-    [TD_S] = ACTION_TAP_DANCE_FN(td_s_finished),
-    [TD_F] = ACTION_TAP_DANCE_FN(td_f_finished),
+    [TDL_A] = ACTION_TAP_DANCE_TRIPLE(KC_A, KC_NO, C(KC_A)),
+    [TDL_S] = ACTION_TAP_DANCE_TRIPLE(KC_S, KC_NO, C(KC_S)),
+    [TDL_F] = ACTION_TAP_DANCE_TRIPLE(KC_F, KC_NO, C(KC_F)),
 
-    [TD_W] = ACTION_TAP_DANCE_FN(td_w_finished),
-    [TD_E] = ACTION_TAP_DANCE_FN(td_e_finished),
-    [TD_T] = ACTION_TAP_DANCE_FN(td_t_finished),
-    [TD_Y] = ACTION_TAP_DANCE_FN(td_y_finished),
-
-    //[TD_SPC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_spc_finished, NULL)
+    [TDL_Q] = ACTION_TAP_DANCE_DOUBLE(KC_Q, A(KC_F4)),
+    [TDL_W] = ACTION_TAP_DANCE_DOUBLE(KC_W, C(KC_W)),
+    [TDL_E] = ACTION_TAP_DANCE_DOUBLE(KC_E, C(KC_E)),
+    [TDL_T] = ACTION_TAP_DANCE_TRIPLE(KC_T, KC_NO, C(KC_T)),
+    [TDL_Y] = ACTION_TAP_DANCE_DOUBLE(KC_Y, C(KC_Y)),
 };
-
-/*
-enum tap_dances {
-    TD_LSPC
-};
-
-qk_tap_dance_action_t tap_dance_actions[] = {
-    [TD_LSPC] = ACTION_TAP_DANCE_DOUBLE(KC_SPC, KC_ENT),
-};
-*/
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /* Base */
     [_BASE] = LAYOUT(
       KC_ESC, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, KC_PSCR, KC_SCRL, KC_PAUS, QK_RBT,
       KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS, KC_EQL, KC_BSPC, KC_DEL, KC_HOME,
-      KC_TAB, KC_Q, TD(TD_W), TD(TD_E), KC_R, TD(TD_T), TD(TD_Y), KC_U, KC_I, KC_O, KC_P, KC_LBRC, KC_RBRC, KC_NUBS, KC_END,
-      OSM(MOD_LCTL), TD(TD_A), TD(TD_S), KC_D, TD(TD_F), KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT, C(KC_V), KC_PGUP,
-      OSM(MOD_RSFT), KC_NUBS, TD(TD_Z), TD(TD_X), TD(TD_C), TD(TD_V), KC_B, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, OSM(MOD_RSFT), KC_UP, KC_PGDN,
-      OSM(MOD_LCTL), OSM(MOD_LGUI), OSM(MOD_LALT), /*TD(TD_SPC)*/KC_SPC, LT(_ALTGR, KC_SPC), TG(_CODE), TG(_ALTGR), A(KC_SPC), KC_LEFT, KC_DOWN, KC_RGHT
+      KC_TAB, TD_Q, TD_W, TD_E, KC_R, TD_T, TD_Y, KC_U, KC_I, KC_O, KC_P, KC_LBRC, KC_RBRC, KC_NUBS, KC_END,
+      OSM(MOD_LCTL), TD_A, TD_S, KC_D, TD_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT, C(KC_V), KC_PGUP,
+      OSM(MOD_RSFT), KC_NUBS, TD_Z, TD_X, TD_C, TD_V, KC_B, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, OSM(MOD_RSFT), KC_UP, KC_PGDN,
+      OSM(MOD_LCTL), OSM(MOD_LGUI), OSM(MOD_LALT), KC_SPC, LT(_ALTGR, KC_SPC), TG(_CODE), TG(_ALTGR), A(KC_SPC), KC_LEFT, KC_DOWN, KC_RGHT
     ),
     [_CODE] = LAYOUT(
       KC_ESC, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, KC_PSCR, KC_SCRL, KC_PAUS, QK_RBT,
@@ -214,19 +149,8 @@ bool get_custom_auto_shifted_key(uint16_t keycode, keyrecord_t *record) {
         // case KC_SPC:
         //     return true;
 
-        case TD(TD_Z):
-        case TD(TD_X):
-        case TD(TD_C):
-        case TD(TD_V):
-
-        case TD(TD_A):
-        case TD(TD_S):
-        case TD(TD_F):
-
-        case TD(TD_W):
-        case TD(TD_E):
-        case TD(TD_T):
-        case TD(TD_Y):
+        // enable auto shift for tap dance keys
+        case QK_TAP_DANCE ... QK_TAP_DANCE_MAX:
             return true;
 
         default:

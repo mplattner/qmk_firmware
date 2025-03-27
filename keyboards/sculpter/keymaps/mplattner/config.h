@@ -10,8 +10,6 @@
 
 //#define DEBUG_MATRIX_SCAN_RATE
 
-//#define DOUBLE_REPORT
-
 // number of times TT(layer) needs to be tapped to toggle layer
 // #define TAPPING_TOGGLE 10
 
