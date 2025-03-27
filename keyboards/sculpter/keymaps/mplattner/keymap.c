@@ -72,7 +72,7 @@ enum custom_tap_dance {
     TDL_F,
     TDL_Q,
     TDL_W,
-    TDL_E,
+    //TDL_E,
     TDL_T,
     TDL_Y,
 };
@@ -86,7 +86,7 @@ enum custom_tap_dance_short {
     TD_F,
     TD_Q,
     TD_W,
-    TD_E,
+    //TD_E,
     TD_T,
     TD_Y,
 };
@@ -103,17 +103,24 @@ tap_dance_action_t tap_dance_actions[] = {
 
     [TDL_Q] = ACTION_TAP_DANCE_DOUBLE(KC_Q, A(KC_F4)),
     [TDL_W] = ACTION_TAP_DANCE_DOUBLE(KC_W, C(KC_W)),
-    [TDL_E] = ACTION_TAP_DANCE_DOUBLE(KC_E, C(KC_E)),
+    //[TDL_E] = ACTION_TAP_DANCE_DOUBLE(KC_E, C(KC_E)),
     [TDL_T] = ACTION_TAP_DANCE_TRIPLE(KC_T, KC_NO, C(KC_T)),
     [TDL_Y] = ACTION_TAP_DANCE_DOUBLE(KC_Y, C(KC_Y)),
+};
+
+const uint16_t PROGMEM ER_ENTER[] = {KC_E, KC_R, COMBO_END};
+const uint16_t PROGMEM ET_TAB[] = {KC_E, TD_T, COMBO_END};
+combo_t key_combos[] = {
+    COMBO(ER_ENTER, KC_ENTER),
+    COMBO(ET_TAB, KC_TAB),
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /* Base */
     [_BASE] = LAYOUT(
       KC_ESC, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, KC_PSCR, KC_SCRL, KC_PAUS, QK_RBT,
-      KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS, KC_EQL, KC_BSPC, KC_DEL, KC_HOME,
-      KC_TAB, TD_Q, TD_W, TD_E, KC_R, TD_T, TD_Y, KC_U, KC_I, KC_O, KC_P, KC_LBRC, KC_RBRC, KC_NUBS, KC_END,
+      QK_REP, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS, KC_EQL, KC_BSPC, KC_DEL, KC_HOME,
+      KC_TAB, TD_Q, TD_W, KC_E, KC_R, TD_T, TD_Y, KC_U, KC_I, KC_O, KC_P, KC_LBRC, KC_RBRC, KC_NUBS, KC_END,
       OSM(MOD_LCTL), TD_A, TD_S, KC_D, TD_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT, C(KC_V), KC_PGUP,
       OSM(MOD_RSFT), KC_NUBS, TD_Z, TD_X, TD_C, TD_V, KC_B, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, OSM(MOD_RSFT), KC_UP, KC_PGDN,
       OSM(MOD_LCTL), OSM(MOD_LGUI), OSM(MOD_LALT), KC_SPC, LT(_ALTGR, KC_SPC), TG(_CODE), TG(_ALTGR), A(KC_SPC), KC_LEFT, KC_DOWN, KC_RGHT

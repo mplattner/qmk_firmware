@@ -4,6 +4,8 @@ MCU = atmega32u4
 # Bootloader selection
 BOOTLOADER = halfkay
 
+LTO_ENABLE = yes
+
 # Build Options
 #   change yes to no to disable
 #
@@ -24,3 +26,6 @@ AUDIO_ENABLE = no           # Audio output
 AUTO_SHIFT_ENABLE = yes
 
 TAP_DANCE_ENABLE = yes
+
+COMBO_ENABLE = yes
+REPEAT_KEY_ENABLE = yes
