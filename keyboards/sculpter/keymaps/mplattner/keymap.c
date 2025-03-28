@@ -108,13 +108,6 @@ tap_dance_action_t tap_dance_actions[] = {
     [TDL_Y] = ACTION_TAP_DANCE_DOUBLE(KC_Y, C(KC_Y)),
 };
 
-const uint16_t PROGMEM ER_ENTER[] = {KC_E, KC_R, COMBO_END};
-const uint16_t PROGMEM ET_TAB[] = {KC_E, TD_T, COMBO_END};
-combo_t key_combos[] = {
-    COMBO(ER_ENTER, KC_ENTER),
-    COMBO(ET_TAB, KC_TAB),
-};
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /* Base */
     [_BASE] = LAYOUT(
