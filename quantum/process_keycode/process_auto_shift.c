@@ -215,7 +215,7 @@ static bool autoshift_press(uint16_t keycode, uint16_t now, keyrecord_t *record)
     // Use physical shift state of press event to be more like normal typing.
 #if !defined(NO_ACTION_ONESHOT) && !defined(NO_ACTION_TAPPING)
     autoshift_flags.lastshifted = (get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT);
-    set_oneshot_mods(get_oneshot_mods() & (~MOD_BIT(KC_LSFT))); // comment if AUTO_SHIFT_MODIFIERS causes problems
+    //set_oneshot_mods(get_oneshot_mods() & (~MOD_BIT(KC_LSFT))); // comment if AUTO_SHIFT_MODIFIERS causes problems
 #else
     autoshift_flags.lastshifted = get_mods() & MOD_BIT(KC_LSFT);
 #endif
