@@ -27,11 +27,11 @@
 #define OSM_LALT OSM(MOD_LALT)
 
 // german umlauts and special characters
-#define DE_AE  ALGR(KC_A)
-#define DE_OE  ALGR(KC_O)
-#define DE_UE  ALGR(KC_U)
-#define DE_SS  ALGR(KC_S)
-#define DE_EUR ALGR(KC_4)
+#define KC_AE  ALGR(KC_A)
+#define KC_OE  ALGR(KC_O)
+#define KC_UE  ALGR(KC_U)
+#define KC_SS  ALGR(KC_S)
+#define KC_EUR ALGR(KC_4)
 
 #define QK_FLASH QK_BOOT
 
@@ -91,6 +91,7 @@ enum custom_keycodes {
     P_LAY
 };
 
+// "long" version of TD keys (enum starting with 0)
 enum custom_tap_dance {
     TDL_Z,
     TDL_X,
@@ -106,6 +107,7 @@ enum custom_tap_dance {
     TDL_Y,
 };
 
+// "short" version of TD keys (enum starting with QK_TAP_DANCE) to be directly used in keymap
 enum custom_tap_dance_short {
     TD_Z = QK_TAP_DANCE,
     TD_X,
@@ -157,9 +159,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [_ALTGR] = LAYOUT(
       _______ , _______ , MEH(KC_F2), MEH(KC_F3), MEH(KC_F4), _______ , _______           , _______ , _______ , KC_MPLY  , KC_MUTE   , KC_VOLD   , KC_VOLU  , _______ , _______ , _______      , QK_FLASH ,
-      _______ , _______ , _______   , KC_NUHS   , DE_EUR    , _______ , _______           , _______           , _______  , _______   , KC_MPRV   , KC_MNXT  , _______           , _______      , _______  , _______,
-      _______           , _______   , KC_ESC    , KC_ENT    , KC_BSPC , KC_TAB            , C(KC_Y)           , DE_UE    , KC_UP     , DE_OE     , P_PWD    , _______ , _______ , _______                 , _______,
-      _______           , DE_AE     , DE_SS     , KC_DEL    , _______ , KC_TAB            , C(KC_Z)           , KC_LEFT  , KC_DOWN   , KC_RIGHT  , _______  , _______ , _______ , _______      , KC_INS   , _______,
+      _______ , _______ , _______   , KC_NUHS   , KC_EUR    , _______ , _______           , _______           , _______  , _______   , KC_MPRV   , KC_MNXT  , _______           , _______      , _______  , _______,
+      _______           , _______   , KC_ESC    , KC_ENT    , KC_BSPC , KC_TAB            , C(KC_Y)           , KC_UE    , KC_UP     , KC_OE     , P_PWD    , _______ , _______ , _______                 , _______,
+      _______           , KC_AE     , KC_SS     , KC_DEL    , _______ , KC_TAB            , C(KC_Z)           , KC_LEFT  , KC_DOWN   , KC_RIGHT  , _______  , _______ , _______ , _______      , KC_INS   , _______,
       _______ , _______ , C(KC_Z)   , C(KC_X)   , C(KC_C)   , C(KC_V) , _______           , KC_HOME           , KC_END   , KC_PGUP   , KC_PGDN   , _______                      , _______      , _______  , _______,
       _______           , _______   , KC_LALT                         , KC_ENT            , _______           , KC_ALGR              , _______   , _______                      , _______      , _______  , _______
     ),
@@ -182,6 +184,13 @@ bool get_custom_auto_shifted_key(uint16_t keycode, keyrecord_t *record) {
 
         // enable auto shift for tap dance keys
         case QK_TAP_DANCE ... QK_TAP_DANCE_MAX:
+            return true;
+
+        // enable auto shift for german umlauts and ß
+        case KC_AE:
+        case KC_OE:
+        case KC_UE:
+        case KC_SS:
             return true;
 
         default:
@@ -271,7 +280,7 @@ void autoshift_press_user(uint16_t keycode, bool shifted, keyrecord_t *record) {
         }
     }
 
-    if (shifted) {
+    if (shifted && keycode != QK_REP) { // tried to fix that holding repeat key sends shifted version of last key
         add_weak_mods(MOD_BIT(KC_LSFT));
     }
 
