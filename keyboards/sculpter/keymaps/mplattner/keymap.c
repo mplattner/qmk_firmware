@@ -20,6 +20,35 @@
 #define TH(key, hold_key) register_code16((!shifted) ? key : hold_key); return;
 #define THU(key, hold_key) unregister_code16((!shifted) ? key : hold_key); return;
 
+// one shot modifiers (sticky keys)
+#define OSM_LCTL OSM(MOD_LCTL)
+#define OSM_RSFT OSM(MOD_RSFT)
+#define OSM_LGUI OSM(MOD_LGUI)
+#define OSM_LALT OSM(MOD_LALT)
+
+// german umlauts and special characters
+#define DE_AE  ALGR(KC_A)
+#define DE_OE  ALGR(KC_O)
+#define DE_UE  ALGR(KC_U)
+#define DE_SS  ALGR(KC_S)
+#define DE_EUR ALGR(KC_4)
+
+#define QK_FLASH QK_BOOT
+
+// just defined so that vscode hightlights those keys in the keymap
+#define TD_Z TD_Z
+#define TD_X TD_X
+#define TD_C TD_C
+#define TD_V TD_V
+#define TD_A TD_A
+#define TD_S TD_S
+#define TD_F TD_F
+#define TD_Q TD_Q
+#define TD_W TD_W
+#define TD_E TD_E
+#define TD_T TD_T
+#define TD_Y TD_Y
+
 typedef struct {
     uint16_t kc1;
     uint16_t kc2;
@@ -54,7 +83,7 @@ enum layer_names {
     _BASE,
     _CODE,
     _ALTGR,
-    _NUM
+    //_NUM
 };
 
 enum custom_keycodes {
@@ -76,6 +105,7 @@ enum custom_tap_dance {
     TDL_T,
     TDL_Y,
 };
+
 enum custom_tap_dance_short {
     TD_Z = QK_TAP_DANCE,
     TD_X,
@@ -109,39 +139,40 @@ tap_dance_action_t tap_dance_actions[] = {
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    /* Base */
     [_BASE] = LAYOUT(
-      KC_ESC, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, KC_PSCR, KC_SCRL, KC_PAUS, QK_RBT,
-      QK_REP, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS, KC_EQL, KC_BSPC, KC_DEL, KC_HOME,
-      KC_TAB, TD_Q, TD_W, KC_E, KC_R, TD_T, TD_Y, KC_U, KC_I, KC_O, KC_P, KC_LBRC, KC_RBRC, KC_NUBS, KC_END,
-      OSM(MOD_LCTL), TD_A, TD_S, KC_D, TD_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT, C(KC_V), KC_PGUP,
-      OSM(MOD_RSFT), KC_NUBS, TD_Z, TD_X, TD_C, TD_V, KC_B, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, OSM(MOD_RSFT), KC_UP, KC_PGDN,
-      OSM(MOD_LCTL), OSM(MOD_LGUI), OSM(MOD_LALT), KC_SPC, LT(_ALTGR, KC_SPC), TG(_CODE), TG(_ALTGR), A(KC_SPC), KC_LEFT, KC_DOWN, KC_RGHT
+      KC_ESC  , KC_F1   , KC_F2     , KC_F3     , KC_F4     , KC_F5   , KC_F6             , KC_F7   , KC_F8   , KC_F9    , KC_F10    , KC_F11    , KC_F12   , KC_PSCR , KC_SCRL , KC_PAUS      , QK_REBOOT,
+      QK_REP  , KC_1    , KC_2      , KC_3      , KC_4      , KC_5    , KC_6              , KC_7              , KC_8     , KC_9      , KC_0      , KC_MINS  , KC_EQL            , KC_BSPC      , KC_DEL   , KC_HOME,
+      KC_TAB            , TD_Q      , TD_W      , KC_E      , KC_R    , TD_T              , TD_Y              , KC_U     , KC_I      , KC_O      , KC_P     , KC_LBRC , KC_RBRC , KC_NUBS                 , KC_END ,
+      OSM_LCTL          , TD_A      , TD_S      , KC_D      , TD_F    , KC_G              , KC_H              , KC_J     , KC_K      , KC_L      , KC_SCLN  , KC_QUOT , KC_NUHS , KC_ENT       , C(KC_V)  , KC_PGUP,
+      OSM_RSFT, KC_NUBS , TD_Z      , TD_X      , TD_C      , TD_V    , KC_B              , KC_N              , KC_M     , KC_COMM   , KC_DOT    , KC_SLSH                      , OSM_RSFT     , KC_UP    , KC_PGDN,
+      OSM_LCTL          , OSM_LGUI  , OSM_LALT                        , KC_SPC            , LT(_ALTGR, KC_SPC), A(KC_SPC)            , TG(_CODE) , OSM_LCTL                     , KC_LEFT      , KC_DOWN  , KC_RGHT
     ),
     [_CODE] = LAYOUT(
-      KC_ESC, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, KC_PSCR, KC_SCRL, KC_PAUS, QK_RBT,
-      KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS, KC_EQL, KC_BSPC, KC_DEL, KC_HOME,
-      KC_TAB, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, KC_LBRC, KC_RBRC, KC_NUBS, KC_END,
-      OSM(MOD_LCTL), KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT, C(KC_V), KC_PGUP,
-      OSM(MOD_RSFT), KC_NUBS, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, OSM(MOD_RSFT), KC_UP, KC_PGDN,
-      OSM(MOD_LCTL), OSM(MOD_LGUI), OSM(MOD_LALT), LT(_NUM, KC_SPC), MT(MOD_RSFT, KC_SPC), TG(_CODE), TG(_ALTGR), A(KC_SPC), KC_LEFT, KC_DOWN, KC_RGHT
+      _______ , _______ , _______   , _______   , _______   , _______ , _______           , _______ , _______ , _______  , _______   , _______   , _______  , _______ , _______ , _______      , _______  ,
+      KC_GRV  , _______ , _______   , _______   , _______   , _______ , _______           , _______           , _______  , _______   , _______   , _______  , _______           , _______      , _______  , _______,
+      _______           , KC_Q      , KC_W      , _______   , _______ , KC_T              , KC_Y              , _______  , _______   , _______   , _______  , _______ , _______ , _______                 , _______,
+      _______           , KC_A      , KC_S      , _______   , KC_F    , _______           , _______           , _______  , _______   , _______   , _______  , _______ , _______ , _______      , _______  , _______,
+      _______ , _______ , KC_Z      , KC_X      , KC_C      , KC_V    , _______           , _______           , _______  , _______   , _______   , _______                      , _______      , _______  , _______,
+      _______           , _______   , _______                         , _______           ,MT(MOD_RSFT,KC_SPC), _______              , TG(_CODE) , _______                      , _______      , _______  , _______
     ),
     [_ALTGR] = LAYOUT(
-      KC_ESC, KC_F1, MEH(KC_F2), MEH(KC_F3), MEH(KC_F4), KC_F5, KC_F6, KC_F7, KC_F8, KC_MPLY, KC_MUTE, KC_VOLD, KC_VOLU, KC_PSCR, KC_SCRL, KC_MPLY, QK_BOOT,
-      KC_GRV, KC_1, KC_2, KC_NUHS, ALGR(KC_4), KC_5, KC_6, KC_7, KC_8, KC_9, KC_MPRV, KC_MNXT, KC_EQL, KC_BSPC, KC_DEL, KC_HOME,
-      KC_TAB, A(KC_F4), KC_ESC, KC_ENT, KC_BSPC, KC_TAB, KC_Y, ALGR(KC_U), KC_UP, ALGR(KC_O), P_PWD, KC_LBRC, KC_RBRC, KC_NUBS, KC_END,
-      OSM(MOD_LCTL), ALGR(KC_A), ALGR(KC_S), KC_DEL, C(S(KC_SPC)), KC_TAB, C(KC_Z), KC_LEFT, KC_DOWN, KC_RIGHT, KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT, KC_INS, KC_PGUP,
-      OSM(MOD_RSFT), KC_NUBS, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), KC_B, KC_HOME, KC_END, KC_PGUP, KC_PGDN, KC_SLSH, KC_RSFT, KC_UP, KC_PGDN,
-      OSM(MOD_LCTL), KC_LGUI, KC_LALT, KC_ENT, KC_TRNS, KC_ALGR, KC_TRNS, KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT
+      _______ , _______ , MEH(KC_F2), MEH(KC_F3), MEH(KC_F4), _______ , _______           , _______ , _______ , KC_MPLY  , KC_MUTE   , KC_VOLD   , KC_VOLU  , _______ , _______ , _______      , QK_FLASH ,
+      _______ , _______ , _______   , KC_NUHS   , DE_EUR    , _______ , _______           , _______           , _______  , _______   , KC_MPRV   , KC_MNXT  , _______           , _______      , _______  , _______,
+      _______           , _______   , KC_ESC    , KC_ENT    , KC_BSPC , KC_TAB            , C(KC_Y)           , DE_UE    , KC_UP     , DE_OE     , P_PWD    , _______ , _______ , _______                 , _______,
+      _______           , DE_AE     , DE_SS     , KC_DEL    , _______ , KC_TAB            , C(KC_Z)           , KC_LEFT  , KC_DOWN   , KC_RIGHT  , _______  , _______ , _______ , _______      , KC_INS   , _______,
+      _______ , _______ , C(KC_Z)   , C(KC_X)   , C(KC_C)   , C(KC_V) , _______           , KC_HOME           , KC_END   , KC_PGUP   , KC_PGDN   , _______                      , _______      , _______  , _______,
+      _______           , _______   , KC_LALT                         , KC_ENT            , _______           , KC_ALGR              , _______   , _______                      , _______      , _______  , _______
     ),
+    /*
     [_NUM] = LAYOUT(
       KC_ESC, KC_F1, MEH(KC_F2), MEH(KC_F3), MEH(KC_F4), KC_F5, KC_F6, KC_F7, KC_F8, KC_MPLY, KC_MUTE, KC_VOLD, KC_VOLU, KC_PSCR, KC_SCRL, KC_MPLY, QK_BOOT,
       KC_GRV, KC_1, KC_2, KC_NUHS, ALGR(KC_4), KC_5, KC_6, KC_7, KC_8, KC_9, KC_MPRV, KC_MNXT, KC_EQL, KC_BSPC, KC_DEL, KC_HOME,
       P_LAY, A(KC_F4), KC_PSCR, C(A(KC_PSCR)), KC_BSPC, KC_TAB, C(KC_Y), KC_MINS, KC_LBRC, KC_RBRC, KC_P, KC_LBRC, KC_RBRC, KC_NUBS, KC_END,
       KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS, KC_EQL, KC_NUHS, KC_ENT, KC_INS, KC_PGUP,
       OSM(MOD_RSFT), KC_NUBS, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), KC_B, KC_EQL, KC_PLUS, KC_LCBR, KC_RCBR, KC_SLSH, KC_RSFT, KC_UP, KC_PGDN,
-      OSM(MOD_LCTL), KC_LGUI, KC_LALT, KC_NO, KC_TRNS, OSL(_NUM), KC_TRNS, KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT
+      OSM(MOD_LCTL), KC_LGUI, KC_LALT, KC_NO, _______, OSL(_NUM), _______, KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT
     ),
+    */
 };
 
 bool get_custom_auto_shifted_key(uint16_t keycode, keyrecord_t *record) {
