@@ -201,11 +201,23 @@ bool get_custom_auto_shifted_key(uint16_t keycode, keyrecord_t *record) {
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     uprintf("keycode: %d\n", keycode);
     uprintf("keycode: %d\n\n", P_LAY);
+
+    bool win_mod = (get_mods() == MOD_BIT(KC_LGUI)) || (get_oneshot_mods() == MOD_BIT(KC_LGUI));
+
     if (keycode == P_PWD && record->event.pressed) {
         SEND_STRING("Somepass1");
         return false;
     }
-    if (keycode == P_LAY && record->event.pressed) {
+    else if (win_mod) {
+        switch (keycode) {
+            case KC_F:
+            case TD_F:
+                tap_code16(LWIN(S(KC_F)));
+                return false;
+        }
+    }
+    /*
+    else if (keycode == P_LAY && record->event.pressed) {
         if (IS_LAYER_ON(_CODE)) {
             tap_code16(MEH(KC_F12));
         } else {
@@ -213,6 +225,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         return false;
     }
+    */
     return true;
 }
 
