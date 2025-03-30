@@ -1,7 +1,7 @@
 #define ONESHOT_TAP_TOGGLE 0
 #define ONESHOT_TIMEOUT 1000
 
-#define AUTO_SHIFT_TIMEOUT 136
+#define AUTO_SHIFT_TIMEOUT 125
 
 #define AUTO_SHIFT_ENTER 1
 #define AUTO_SHIFT_REPEAT 1
@@ -14,7 +14,7 @@
 // #define TAPPING_TOGGLE 10
 
 // tap dance duration
-#define TAPPING_TERM 200
+#define TAPPING_TERM 190
 #define TAPPING_TERM_PER_KEY
 
 // trying to fix issue that occurs since enabling AUTO_SHIFT_MODIFIERS, see https://github.com/qmk/qmk_firmware/issues/19671
