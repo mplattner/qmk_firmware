@@ -239,11 +239,13 @@ void autoshift_press_user(uint16_t keycode, bool shifted, keyrecord_t *record) {
     bool r_shift_held = get_mods() & MOD_BIT(KC_RSFT);
     bool r_shift_held_osm = get_oneshot_mods() & MOD_BIT(KC_RSFT);
 
+    /*
     bool l_ctrl_held = get_mods() & MOD_BIT(KC_LCTL);
     bool l_ctrl_held_osm = get_oneshot_mods() & MOD_BIT(KC_LCTL);
 
     uprintf("l_ctrl_held: %d\n", l_ctrl_held);
     uprintf("l_ctrl_held_osm: %d\n", l_ctrl_held_osm);
+    */
 
     bool shift_held = l_shift_held || r_shift_held || l_shift_held_osm || r_shift_held_osm;
     if (IS_LAYER_ON(_BASE)) {
