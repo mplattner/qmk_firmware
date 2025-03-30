@@ -264,6 +264,7 @@ void autoshift_press_user(uint16_t keycode, bool shifted, keyrecord_t *record) {
         switch(keycode) {
             case KC_W: TH(KC_W, C(KC_W));
             case KC_E: TH(KC_E, KC_ENT);
+            //case TD_E: TH(KC_E, KC_ENT); // does not work - outputs e after ENTER, here and via TD processing (?)
             case KC_R: TH(KC_R, KC_BSPC);
             case KC_T: TH(KC_T, KC_TAB);
 
@@ -274,6 +275,7 @@ void autoshift_press_user(uint16_t keycode, bool shifted, keyrecord_t *record) {
             case KC_G: TH(KC_G, KC_GRV);
 
             case KC_Z: TH(KC_Z, C(KC_Z));
+            // case TD_Z: TH(KC_Z, C(KC_Z)); // does not work - outputs zz two times, here and via TD processing (?)
             case KC_X: TH(KC_X, C(KC_X));
             case KC_C: TH(KC_C, C(KC_C));
             case KC_V: TH(KC_V, C(KC_V));
@@ -322,6 +324,7 @@ void autoshift_release_user(uint16_t keycode, bool shifted, keyrecord_t *record)
         switch(keycode) {
             case KC_W: THU(KC_W, C(KC_W));
             case KC_E: THU(KC_E, KC_ENT);
+            //case TD_E: THU(KC_E, KC_ENT);
             case KC_R: THU(KC_R, KC_BSPC);
             case KC_T: THU(KC_T, KC_TAB);
 
@@ -332,6 +335,7 @@ void autoshift_release_user(uint16_t keycode, bool shifted, keyrecord_t *record)
             case KC_G: THU(KC_G, KC_GRV);
 
             case KC_Z: THU(KC_Z, C(KC_Z));
+            //case TD_Z: THU(KC_Z, C(KC_Z));
             case KC_X: THU(KC_X, C(KC_X));
             case KC_C: THU(KC_C, C(KC_C));
             case KC_V: THU(KC_V, C(KC_V));
