@@ -142,28 +142,28 @@ tap_dance_action_t tap_dance_actions[] = {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE] = LAYOUT(
-      KC_ESC  , KC_F1   , KC_F2     , KC_F3     , KC_F4     , KC_F5   , KC_F6             , KC_F7   , KC_F8   , KC_F9    , KC_F10    , KC_F11    , KC_F12   , KC_PSCR , KC_SCRL , KC_PAUS      , QK_REBOOT,
-      QK_REP  , KC_1    , KC_2      , KC_3      , KC_4      , KC_5    , KC_6              , KC_7              , KC_8     , KC_9      , KC_0      , KC_MINS  , KC_EQL            , KC_BSPC      , KC_DEL   , KC_HOME,
-      KC_TAB            , TD_Q      , TD_W      , TD_E      , KC_R    , TD_T              , TD_Y              , KC_U     , KC_I      , KC_O      , KC_P     , KC_LBRC , KC_RBRC , KC_NUBS                 , KC_END ,
-      OSM_LCTL          , TD_A      , TD_S      , KC_D      , TD_F    , KC_G              , KC_H              , KC_J     , KC_K      , KC_L      , KC_SCLN  , KC_QUOT , KC_NUHS , KC_ENT       , C(KC_V)  , KC_PGUP,
-      OSM_RSFT, KC_NUBS , TD_Z      , TD_X      , TD_C      , TD_V    , KC_B              , KC_N              , KC_M     , KC_COMM   , KC_DOT    , KC_SLSH                      , OSM_RSFT     , KC_UP    , KC_PGDN,
-      OSM_LCTL          , OSM_LGUI  , OSM_LALT                        , KC_SPC            , LT(_ALTGR, KC_SPC), A(KC_SPC)            , TG(_CODE) , OSM_LCTL                     , KC_LEFT      , KC_DOWN  , KC_RGHT
+      KC_ESC  , KC_F1   , KC_F2     , KC_F3     , KC_F4     , KC_F5   , KC_F6             , KC_F7   , KC_F8   , KC_F9    , KC_F10    , KC_F11    , KC_F12   , KC_PSCR , KC_SCRL , KC_PAUS          , QK_REBOOT,
+      QK_REP  , KC_1    , KC_2      , KC_3      , KC_4      , KC_5    , KC_6              , KC_7              , KC_8     , KC_9      , KC_0      , KC_MINS  , KC_EQL            , KC_BSPC          , KC_DEL   , KC_HOME,
+      KC_TAB            , TD_Q      , TD_W      , TD_E      , KC_R    , TD_T              , TD_Y              , KC_U     , KC_I      , KC_O      , KC_P     , KC_LBRC , KC_RBRC , KC_NUBS                     , KC_END ,
+      OSM_LCTL          , TD_A      , TD_S      , KC_D      , TD_F    , KC_G              , KC_H              , KC_J     , KC_K      , KC_L      , KC_SCLN  , KC_QUOT , KC_NUHS , KC_ENT           , C(KC_V)  , KC_PGUP,
+      OSM_RSFT, KC_NUBS , TD_Z      , TD_X      , TD_C      , TD_V    , KC_B              , KC_N              , KC_M     , KC_COMM   , KC_DOT    , KC_SLSH                      , OSM_RSFT         , KC_UP    , KC_PGDN,
+      OSM_LCTL          , OSM_LGUI  , OSM_LALT                        , KC_SPC            , LT(_ALTGR, KC_SPC), A(KC_SPC)            , TG(_CODE) , OSM_LCTL                     , KC_LEFT          , KC_DOWN  , KC_RGHT
     ),
     [_CODE] = LAYOUT(
-      _______ , _______ , _______   , _______   , _______   , _______ , _______           , _______ , _______ , _______  , _______   , _______   , _______  , _______ , _______ , _______      , _______  ,
-      KC_GRV  , _______ , _______   , _______   , _______   , _______ , _______           , _______           , _______  , _______   , _______   , _______  , _______           , _______      , _______  , _______,
-      _______           , KC_Q      , KC_W      , KC_E      , _______ , KC_T              , KC_Y              , _______  , _______   , _______   , _______  , _______ , _______ , _______                 , _______,
-      _______           , KC_A      , KC_S      , _______   , KC_F    , _______           , _______           , _______  , _______   , _______   , _______  , _______ , _______ , _______      , _______  , _______,
-      _______ , _______ , KC_Z      , KC_X      , KC_C      , KC_V    , _______           , _______           , _______  , _______   , _______   , _______                      , _______      , _______  , _______,
-      _______           , _______   , _______                         , _______           ,MT(MOD_RSFT,KC_SPC), _______              , TG(_CODE) , _______                      , _______      , _______  , _______
+      _______ , _______ , _______   , _______   , _______   , _______ , _______           , _______ , _______ , _______  , _______   , _______   , _______  , _______ , _______ , _______           , _______  ,
+      KC_GRV  , _______ , _______   , _______   , _______   , _______ , _______           , _______           , _______  , _______   , _______   , _______  , _______           , _______           , _______  , _______,
+      _______           , KC_Q      , KC_W      , KC_E      , _______ , KC_T              , KC_Y              , _______  , _______   , _______   , _______  , _______ , _______ , _______                      , _______,
+      _______           , KC_A      , KC_S      , _______   , KC_F    , _______           , _______           , _______  , _______   , _______   , _______  , _______ , _______ , _______           , _______  , _______,
+      _______ , _______ , KC_Z      , KC_X      , KC_C      , KC_V    , _______           , _______           , _______  , _______   , _______   , _______                      , _______           , _______  , _______,
+      _______           , _______   , _______                         , _______           ,MT(MOD_RSFT,KC_SPC), _______              , _______   , _______                      , _______           , _______  , _______
     ),
     [_ALTGR] = LAYOUT(
-      _______ , _______ , MEH(KC_F2), MEH(KC_F3), MEH(KC_F4), _______ , _______           , _______ , _______ , KC_MPLY  , KC_MUTE   , KC_VOLD   , KC_VOLU  , _______ , _______ , _______      , QK_FLASH ,
-      KC_GRV  , _______ , _______   , KC_NUHS   , KC_EUR    , _______ , _______           , _______           , _______  , _______   , KC_MPRV   , KC_MNXT  , _______           , _______      , _______  , _______,
-      _______           , _______   , KC_ESC    , KC_ENT    , KC_BSPC , KC_TAB            , C(KC_Y)           , KC_UE    , KC_UP     , KC_OE     , P_PWD    , _______ , _______ , _______                 , _______,
-      _______           , KC_AE     , KC_SS     , KC_DEL    , _______ , KC_TAB            , C(KC_Z)           , KC_LEFT  , KC_DOWN   , KC_RIGHT  , _______  , _______ , _______ , _______      , KC_INS   , _______,
-      _______ , _______ , C(KC_Z)   , C(KC_X)   , C(KC_C)   , C(KC_V) , _______           , KC_HOME           , KC_END   , KC_PGUP   , KC_PGDN   , _______                      , _______      , _______  , _______,
-      _______           , _______   , KC_LALT                         , KC_ENT            , _______           , KC_ALGR              , _______   , _______                      , _______      , _______  , _______
+      _______ , _______ , MEH(KC_F2), MEH(KC_F3), MEH(KC_F4), _______ , _______           , _______ , _______ , KC_MPLY  , KC_MUTE   , KC_VOLD   , KC_VOLU  , _______ , _______ , _______           , QK_FLASH ,
+      KC_GRV  , _______ , _______   , KC_NUHS   , KC_EUR    , _______ , _______           , _______           , _______  , _______   , KC_MPRV   , KC_MNXT  , _______           , _______           , _______  , _______,
+      _______           , _______   , KC_ESC    , KC_ENT    , KC_BSPC , KC_TAB            , C(KC_Y)           , KC_UE    , KC_UP     , KC_OE     , P_PWD    , _______ , _______ , _______                      , _______,
+      _______           , KC_AE     , KC_SS     , KC_DEL    , _______ , KC_TAB            , C(KC_Z)           , KC_LEFT  , KC_DOWN   , KC_RIGHT  , _______  , _______ , _______ , _______           , KC_INS   , _______,
+      _______ , _______ , C(KC_Z)   , C(KC_X)   , C(KC_C)   , C(KC_V) , _______           , KC_HOME           , KC_END   , KC_PGUP   , KC_PGDN   , _______                      , _______           , _______  , _______,
+      _______           , _______   , KC_LALT                         , KC_ENT            , _______           , KC_ALGR              , _______   , _______                      , _______           , _______  , _______
     ),
     /*
     [_NUM] = LAYOUT(
