@@ -49,6 +49,8 @@
 #define TD_T TD_T
 #define TD_Y TD_Y
 
+const char git_revision[] PROGMEM = GIT_REVISION;
+
 typedef struct {
     uint16_t kc1;
     uint16_t kc2;
@@ -88,7 +90,8 @@ enum layer_names {
 
 enum custom_keycodes {
     P_PWD = SAFE_RANGE,
-    P_LAY
+    P_LAY,
+    P_GITRV
 };
 
 // "long" version of TD keys (enum starting with 0)
@@ -158,7 +161,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       _______           , _______   , _______                         , _______           ,MT(MOD_RSFT,KC_SPC), _______              , _______   , _______                      , _______           , _______  , _______
     ),
     [_ALTGR] = LAYOUT(
-      _______ , _______ , MEH(KC_F2), MEH(KC_F3), MEH(KC_F4), _______ , _______           , _______ , _______ , KC_MPLY  , KC_MUTE   , KC_VOLD   , KC_VOLU  , _______ , _______ , _______           , QK_FLASH ,
+      P_GITRV , _______ , MEH(KC_F2), MEH(KC_F3), MEH(KC_F4), _______ , _______           , _______ , _______ , KC_MPLY  , KC_MUTE   , KC_VOLD   , KC_VOLU  , _______ , _______ , _______           , QK_FLASH ,
       KC_GRV  , _______ , _______   , KC_NUHS   , KC_EUR    , _______ , _______           , _______           , _______  , _______   , KC_MPRV   , KC_MNXT  , _______           , _______           , _______  , _______,
       _______           , _______   , KC_ESC    , KC_ENT    , KC_BSPC , KC_TAB            , C(KC_Y)           , KC_UE    , KC_UP     , KC_OE     , P_PWD    , _______ , _______ , _______                      , _______,
       _______           , KC_AE     , KC_SS     , KC_DEL    , _______ , KC_TAB            , C(KC_Z)           , KC_LEFT  , KC_DOWN   , KC_RIGHT  , _______  , _______ , _______ , _______           , KC_INS   , _______,
@@ -206,6 +209,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     if (keycode == P_PWD && record->event.pressed) {
         SEND_STRING("Somepass1");
+        return false;
+    }
+    else if (keycode == P_GITRV && record->event.pressed) {
+        send_string_P(git_revision);
         return false;
     }
     else if (win_mod) {
