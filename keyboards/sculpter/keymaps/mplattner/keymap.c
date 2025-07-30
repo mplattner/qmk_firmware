@@ -40,9 +40,13 @@
 #define TD_X TD_X
 #define TD_C TD_C
 #define TD_V TD_V
+#define TD_B TD_B
+
 #define TD_A TD_A
 #define TD_S TD_S
 #define TD_F TD_F
+#define TD_G TD_G
+
 #define TD_Q TD_Q
 #define TD_W TD_W
 #define TD_E TD_E
@@ -100,9 +104,13 @@ enum custom_tap_dance {
     TDL_X,
     TDL_C,
     TDL_V,
+    TDL_B,
+
     TDL_A,
     TDL_S,
     TDL_F,
+    TDL_G,
+
     TDL_Q,
     TDL_W,
     TDL_E,
@@ -116,9 +124,13 @@ enum custom_tap_dance_short {
     TD_X,
     TD_C,
     TD_V,
+    TD_B,
+
     TD_A,
     TD_S,
     TD_F,
+    TD_G,
+
     TD_Q,
     TD_W,
     TD_E,
@@ -131,10 +143,12 @@ tap_dance_action_t tap_dance_actions[] = {
     [TDL_X] = ACTION_TAP_DANCE_DOUBLE(KC_X, C(KC_X)),
     [TDL_C] = ACTION_TAP_DANCE_DOUBLE(KC_C, C(KC_C)),
     [TDL_V] = ACTION_TAP_DANCE_DOUBLE(KC_V, C(KC_V)),
+    [TDL_B] = ACTION_TAP_DANCE_DOUBLE(KC_B, C(KC_B)),
 
     [TDL_A] = ACTION_TAP_DANCE_TRIPLE(KC_A, KC_NO, C(KC_A)),
     [TDL_S] = ACTION_TAP_DANCE_TRIPLE(KC_S, KC_NO, C(KC_S)),
     [TDL_F] = ACTION_TAP_DANCE_TRIPLE(KC_F, KC_NO, C(KC_F)),
+    [TDL_G] = ACTION_TAP_DANCE_DOUBLE(KC_G, KC_TAB),
 
     [TDL_Q] = ACTION_TAP_DANCE_DOUBLE(KC_Q, A(KC_F4)),
     [TDL_W] = ACTION_TAP_DANCE_DOUBLE(KC_W, C(KC_W)),
@@ -148,8 +162,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       KC_ESC  , KC_F1   , KC_F2     , KC_F3     , KC_F4     , KC_F5   , KC_F6             , KC_F7   , KC_F8   , KC_F9    , KC_F10    , KC_F11    , KC_F12   , KC_PSCR , KC_SCRL , KC_PAUS          , QK_REBOOT,
       QK_REP  , KC_1    , KC_2      , KC_3      , KC_4      , KC_5    , KC_6              , KC_7              , KC_8     , KC_9      , KC_0      , KC_MINS  , KC_EQL            , KC_BSPC          , KC_DEL   , KC_HOME,
       KC_TAB            , TD_Q      , TD_W      , TD_E      , KC_R    , TD_T              , TD_Y              , KC_U     , KC_I      , KC_O      , KC_P     , KC_LBRC , KC_RBRC , KC_NUBS                     , KC_END ,
-      OSM_LCTL          , TD_A      , TD_S      , KC_D      , TD_F    , KC_G              , KC_H              , KC_J     , KC_K      , KC_L      , KC_SCLN  , KC_QUOT , KC_NUHS , KC_ENT           , C(KC_V)  , KC_PGUP,
-      OSM_RSFT, KC_NUBS , TD_Z      , TD_X      , TD_C      , TD_V    , KC_B              , KC_N              , KC_M     , KC_COMM   , KC_DOT    , KC_SLSH                      , OSM_RSFT         , KC_UP    , KC_PGDN,
+      OSM_LCTL          , TD_A      , TD_S      , KC_D      , TD_F    , TD_G              , KC_H              , KC_J     , KC_K      , KC_L      , KC_SCLN  , KC_QUOT , KC_NUHS , KC_ENT           , C(KC_V)  , KC_PGUP,
+      OSM_RSFT, KC_NUBS , TD_Z      , TD_X      , TD_C      , TD_V    , TD_B              , KC_N              , KC_M     , KC_COMM   , KC_DOT    , KC_SLSH                      , OSM_RSFT         , KC_UP    , KC_PGDN,
       OSM_LCTL          , OSM_LGUI  , OSM_LALT                        , KC_SPC            , LT(_ALTGR, KC_SPC), A(KC_SPC)            , TG(_CODE) , OSM_LCTL                     , KC_LEFT          , KC_DOWN  , KC_RGHT
     ),
     [_CODE] = LAYOUT(
@@ -385,7 +399,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case OSM(MOD_LCTL):
         case KC_LCTL:
         case MOD_LCTL:
-            return 400;
+        //    return 400;
         default:
             return TAPPING_TERM;
     }
