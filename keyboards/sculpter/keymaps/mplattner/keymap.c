@@ -221,7 +221,7 @@ void oneshot_locked_mods_changed_user(uint8_t mods) {
 
     // if OSM_LCTL was pressed ONESHOT_TAP_TOGGLE times, do this instead
     if (mods == MOD_BIT_LCTRL) {
-        send_string_P(git_revision);
+        set_oneshot_mods(MOD_BIT_LSHIFT);
     }
 }
 
