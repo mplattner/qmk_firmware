@@ -44,14 +44,19 @@
 
 #define TD_A TD_A
 #define TD_S TD_S
+#define TD_D TD_D
 #define TD_F TD_F
 #define TD_G TD_G
 
 #define TD_Q TD_Q
 #define TD_W TD_W
 #define TD_E TD_E
+#define TD_R TD_R
 #define TD_T TD_T
 #define TD_Y TD_Y
+
+#define TD_LEFT TD_LEFT
+#define TD_RIGHT TD_RIGHT
 
 const char git_revision[] PROGMEM = GIT_REVISION;
 
@@ -61,8 +66,26 @@ typedef struct {
     uint16_t kc3;
 } tap_dance_triple_t;
 
+typedef struct {
+    uint16_t tap;
+    uint16_t hold;
+} tap_dance_hold_t;
+
+typedef struct {
+    uint16_t tap;
+    uint16_t hold;
+} tap_dance_hold1_t;
+
 #define ACTION_TAP_DANCE_TRIPLE(kc1, kc2, kc3) \
     { .fn = {NULL, tap_dance_triple_finished, NULL, NULL}, .user_data = (void *)&((tap_dance_triple_t){kc1, kc2, kc3}), }
+
+// doesn't support key repeat for hold key
+#define ACTION_TAP_DANCE_HOLD(tap, hold) \
+    { .fn = {NULL, tap_dance_hold_finished, NULL, NULL}, .user_data = (void *)&((tap_dance_hold_t){tap, hold}), }
+
+// does support key repeat for hold key
+#define ACTION_TAP_DANCE_HOLD1(tap, hold) \
+    { .fn = {tap_dance_hold1_on_each_tap, tap_dance_hold1_finished, tap_dance_hold1_reset, NULL}, .user_data = (void *)&((tap_dance_hold1_t){tap, hold}), }
 
 void tap_dance_triple_finished(tap_dance_state_t *state, void *user_data) {
     tap_dance_triple_t *triple = (tap_dance_triple_t *)user_data;
@@ -81,6 +104,64 @@ void tap_dance_triple_finished(tap_dance_state_t *state, void *user_data) {
     }
     else if (state->count == 3) {
         tap_code16(triple->kc3);
+    }
+}
+
+void tap_dance_hold_finished(tap_dance_state_t *state, void *user_data) {
+    tap_dance_hold_t *tuple = (tap_dance_hold_t *)user_data;
+
+    if (state->count == 1) {
+        tap_code16(tuple->tap);
+    }
+    else if (state->count == 2) {
+        if (state->pressed) {
+            tap_code16(tuple->hold);
+        }
+        else {
+            tap_code16(tuple->tap);
+            tap_code16(tuple->tap);
+        }
+    }
+}
+
+void tap_dance_hold1_on_each_tap(tap_dance_state_t *state, void *user_data) {
+    tap_dance_hold1_t *hold1 = (tap_dance_hold1_t *)user_data;
+
+    if (state->count == 3) {
+        tap_code16(hold1->tap);
+        tap_code16(hold1->tap);
+        tap_code16(hold1->tap);
+    }
+    else if (state->count > 3) {
+        tap_code16(hold1->tap);
+    }
+}
+
+void tap_dance_hold1_finished(tap_dance_state_t *state, void *user_data) {
+    tap_dance_hold1_t *hold1 = (tap_dance_hold1_t *)user_data;
+
+    if (state->count == 1) {
+        register_code16(hold1->tap);
+    }
+    else if (state->count == 2) {
+        if (state->pressed) {
+            register_code16(hold1->hold);
+        }
+        else {
+            tap_code16(hold1->tap);
+            tap_code16(hold1->tap);
+        }
+    }
+}
+
+void tap_dance_hold1_reset(tap_dance_state_t *state, void *user_data) {
+    tap_dance_hold1_t *hold1 = (tap_dance_hold1_t *)user_data;
+
+    if (state->count == 1) {
+        wait_ms(TAP_CODE_DELAY);
+        unregister_code16(hold1->tap);
+    } else if (state->count == 2) {
+        unregister_code16(hold1->hold);
     }
 }
 
@@ -108,14 +189,19 @@ enum custom_tap_dance {
 
     TDL_A,
     TDL_S,
+    TDL_D,
     TDL_F,
     TDL_G,
 
     TDL_Q,
     TDL_W,
     TDL_E,
+    TDL_R,
     TDL_T,
     TDL_Y,
+
+    TDL_LEFT,
+    TDL_RIGHT
 };
 
 // "short" version of TD keys (enum starting with QK_TAP_DANCE) to be directly used in keymap
@@ -128,14 +214,19 @@ enum custom_tap_dance_short {
 
     TD_A,
     TD_S,
+    TD_D,
     TD_F,
     TD_G,
 
     TD_Q,
     TD_W,
     TD_E,
+    TD_R,
     TD_T,
     TD_Y,
+
+    TD_LEFT,
+    TD_RIGHT
 };
 
 tap_dance_action_t tap_dance_actions[] = {
@@ -145,33 +236,41 @@ tap_dance_action_t tap_dance_actions[] = {
     [TDL_V] = ACTION_TAP_DANCE_DOUBLE(KC_V, C(KC_V)),
     [TDL_B] = ACTION_TAP_DANCE_DOUBLE(KC_B, C(KC_B)),
 
-    [TDL_A] = ACTION_TAP_DANCE_TRIPLE(KC_A, KC_NO, C(KC_A)),
+    //[TDL_A] = ACTION_TAP_DANCE_TRIPLE(KC_A, KC_NO, C(KC_A)),
+    [TDL_A] = ACTION_TAP_DANCE_HOLD(KC_A, C(KC_A)),
     [TDL_S] = ACTION_TAP_DANCE_TRIPLE(KC_S, KC_NO, C(KC_S)),
-    [TDL_F] = ACTION_TAP_DANCE_TRIPLE(KC_F, KC_NO, C(KC_F)),
+    [TDL_D] = ACTION_TAP_DANCE_HOLD1(KC_D, KC_DEL),
+    [TDL_F] = ACTION_TAP_DANCE_HOLD(KC_F, C(KC_F)),
     [TDL_G] = ACTION_TAP_DANCE_DOUBLE(KC_G, KC_TAB),
 
     [TDL_Q] = ACTION_TAP_DANCE_DOUBLE(KC_Q, A(KC_F4)),
     [TDL_W] = ACTION_TAP_DANCE_DOUBLE(KC_W, C(KC_W)),
-    [TDL_E] = ACTION_TAP_DANCE_TRIPLE(KC_E, KC_NO, KC_ENTER),
-    [TDL_T] = ACTION_TAP_DANCE_TRIPLE(KC_T, KC_NO, C(KC_T)),
+    //[TDL_E] = ACTION_TAP_DANCE_TRIPLE(KC_E, KC_NO, KC_ENTER),
+    [TDL_E] = ACTION_TAP_DANCE_HOLD1(KC_E, KC_ENTER),
+    [TDL_R] = ACTION_TAP_DANCE_HOLD1(KC_R, KC_BSPC),
+    //[TDL_T] = ACTION_TAP_DANCE_TRIPLE(KC_T, KC_NO, C(KC_T)),
+    [TDL_T] = ACTION_TAP_DANCE_HOLD1(KC_T, KC_TAB),
     [TDL_Y] = ACTION_TAP_DANCE_DOUBLE(KC_Y, C(KC_Y)),
+
+    [TDL_LEFT] = ACTION_TAP_DANCE_HOLD1(KC_LEFT, S(KC_LEFT)),
+    [TDL_RIGHT] = ACTION_TAP_DANCE_HOLD1(KC_RIGHT, S(KC_RIGHT)),
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE] = LAYOUT(
       KC_ESC  , KC_F1   , KC_F2     , KC_F3     , KC_F4     , KC_F5   , KC_F6             , KC_F7   , KC_F8   , KC_F9    , KC_F10    , KC_F11    , KC_F12   , KC_PSCR , KC_SCRL , KC_PAUS          , QK_REBOOT,
       QK_REP  , KC_1    , KC_2      , KC_3      , KC_4      , KC_5    , KC_6              , KC_7              , KC_8     , KC_9      , KC_0      , KC_MINS  , KC_EQL            , KC_BSPC          , KC_DEL   , KC_HOME,
-      KC_TAB            , TD_Q      , TD_W      , TD_E      , KC_R    , TD_T              , TD_Y              , KC_U     , KC_I      , KC_O      , KC_P     , KC_LBRC , KC_RBRC , KC_NUBS                     , KC_END ,
-      OSM_LCTL          , TD_A      , TD_S      , KC_D      , TD_F    , TD_G              , KC_H              , KC_J     , KC_K      , KC_L      , KC_SCLN  , KC_QUOT , KC_NUHS , KC_ENT           , C(KC_V)  , KC_PGUP,
-      OSM_RSFT, KC_NUBS , TD_Z      , TD_X      , TD_C      , TD_V    , TD_B              , KC_N              , KC_M     , KC_COMM   , KC_DOT    , KC_SLSH                      , OSM_RSFT         , KC_UP    , KC_PGDN,
-      OSM_LCTL          , OSM_LGUI  , OSM_LALT                        , KC_SPC            , LT(_ALTGR, KC_SPC), A(KC_SPC)            , TG(_CODE) , OSM_LCTL                     , KC_LEFT          , KC_DOWN  , KC_RGHT
+      KC_TAB            , TD_Q      , TD_W      , TD_E      , TD_R    , TD_T              , TD_Y              , KC_U     , KC_I      , KC_O      , KC_P     , KC_LBRC , KC_RBRC , KC_NUBS                     , KC_END ,
+      OSM_LCTL          , TD_A      , TD_S      , TD_D      , TD_F    , TD_G              , KC_H              , KC_J     , KC_K      , KC_L      , KC_SCLN  , KC_QUOT , KC_NUHS , KC_ENT           , C(KC_V)  , KC_PGUP,
+      OSM_RSFT, KC_NUBS , TD_Z      , TD_X      , TD_C      , TD_V    , TD_B              , KC_N              , KC_M     , KC_COMM   , KC_DOT    , KC_SLSH                      , KC_CAPS          , KC_UP    , KC_PGDN,
+      OSM_LCTL          , OSM_LGUI  , OSM_LALT                        , KC_SPC            , LT(_ALTGR, KC_SPC), A(KC_SPC)            , TG(_CODE) , OSM_LCTL                     , KC_LEFT          , KC_DOWN  , KC_RIGHT
     ),
     [_CODE] = LAYOUT(
       _______ , _______ , _______   , _______   , _______   , _______ , _______           , _______ , _______ , _______  , _______   , _______   , _______  , _______ , _______ , _______           , _______  ,
       KC_GRV  , _______ , _______   , _______   , _______   , _______ , _______           , _______           , _______  , _______   , _______   , _______  , _______           , _______           , _______  , _______,
-      _______           , KC_Q      , KC_W      , KC_E      , _______ , KC_T              , KC_Y              , _______  , _______   , _______   , _______  , _______ , _______ , _______                      , _______,
-      _______           , KC_A      , KC_S      , _______   , KC_F    , _______           , _______           , _______  , _______   , _______   , _______  , _______ , _______ , _______           , _______  , _______,
-      _______ , _______ , KC_Z      , KC_X      , KC_C      , KC_V    , _______           , _______           , _______  , _______   , _______   , _______                      , _______           , _______  , _______,
+      _______           , KC_Q      , KC_W      , KC_E      , KC_R    , KC_T              , KC_Y              , _______  , _______   , _______   , _______  , _______ , _______ , _______                      , _______,
+      _______           , KC_A      , KC_S      , KC_D      , KC_F    , KC_G              , _______           , _______  , _______   , _______   , _______  , _______ , _______ , _______           , _______  , _______,
+      _______ , _______ , KC_Z      , KC_X      , KC_C      , KC_V    , KC_B              , _______           , _______  , _______   , _______   , _______                      , _______           , _______  , _______,
       _______           , _______   , _______                         , _______           ,MT(MOD_RSFT,KC_SPC), _______              , _______   , _______                      , _______           , _______  , _______
     ),
     [_ALTGR] = LAYOUT(
@@ -195,6 +294,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 bool get_custom_auto_shifted_key(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        // disable auto shift for tap dance on arrow keys
+        case TD(TD_LEFT):
+        case TD(TD_RIGHT):
+            return false;
+    }
+
     switch (keycode) {
         // case KC_SPC:
         //     return true;
@@ -394,13 +500,6 @@ void autoshift_release_user(uint16_t keycode, bool shifted, keyrecord_t *record)
     if ( ! IS_QK_TAP_DANCE(keycode)) {
         unregister_code16((IS_RETRO(keycode)) ? keycode & 0xFF : keycode);
     }
-}
-
-void keyboard_post_init_user(void) {
-  // Customise these values to desired behaviour
-  //debug_enable=true;
-  //debug_matrix=true;
-  //debug_keyboard=true;
 }
 
 // needed to make sure the left OSM ctrl is registered as OSM and not a regular key press (fixes AUTO_SHIFT_MODIFIERS issue #19671)
