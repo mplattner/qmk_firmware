@@ -144,7 +144,8 @@ void tap_dance_hold1_finished(tap_dance_state_t *state, void *user_data) {
         register_code16(hold1->tap);
     }
     else if (state->count == 2) {
-        if (state->pressed) {
+        // when interruped by another key, it's likely not an intentional tap-and-hold
+        if (state->pressed && !state->interrupted) {
             register_code16(hold1->hold);
         }
         else {
