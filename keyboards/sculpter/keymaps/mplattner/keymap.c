@@ -41,6 +41,7 @@
 #define TD_C TD_C
 #define TD_V TD_V
 #define TD_B TD_B
+#define TD_N TD_N
 
 #define TD_A TD_A
 #define TD_S TD_S
@@ -58,7 +59,20 @@
 #define TD_LEFT TD_LEFT
 #define TD_RIGHT TD_RIGHT
 
+#define TD_SEL_L TD_SEL_L
+#define TD_SEL_R TD_SEL_R
+
 const char git_revision[] PROGMEM = GIT_REVISION;
+
+// Defines names for use in layer keycodes and the keymap
+enum layer_names {
+    _BASE,
+    _NAVIGATION,
+    _SELECT,
+    _CODE,
+    _ALTGR,
+    //_NUM
+};
 
 typedef struct {
     uint16_t kc1;
@@ -146,7 +160,18 @@ void tap_dance_hold1_finished(tap_dance_state_t *state, void *user_data) {
     else if (state->count == 2) {
         // when interruped by another key, it's likely not an intentional tap-and-hold
         if (state->pressed && !state->interrupted) {
-            register_code16(hold1->hold);
+            // when key is of type TD(KC_*), then toggle layer
+            if (hold1->hold >= QK_TOGGLE_LAYER && hold1->hold <= QK_TOGGLE_LAYER_MAX) {
+                layer_invert(QK_TOGGLE_LAYER_GET_LAYER(hold1->hold));
+            }
+            else {
+                register_code16(hold1->hold);
+
+                // special case for S(KC_LEFT)
+                if (hold1->hold == S(KC_LEFT)) {
+                    layer_on(_SELECT);
+                }
+            }
         }
         else {
             tap_code16(hold1->tap);
@@ -166,14 +191,6 @@ void tap_dance_hold1_reset(tap_dance_state_t *state, void *user_data) {
     }
 }
 
-// Defines names for use in layer keycodes and the keymap
-enum layer_names {
-    _BASE,
-    _CODE,
-    _ALTGR,
-    //_NUM
-};
-
 enum custom_keycodes {
     P_PWD = SAFE_RANGE,
     P_LAY,
@@ -187,6 +204,7 @@ enum custom_tap_dance {
     TDL_C,
     TDL_V,
     TDL_B,
+    TDL_N,
 
     TDL_A,
     TDL_S,
@@ -202,7 +220,10 @@ enum custom_tap_dance {
     TDL_Y,
 
     TDL_LEFT,
-    TDL_RIGHT
+    TDL_RIGHT,
+
+    TDL_SEL_L,
+    TDL_SEL_R
 };
 
 // "short" version of TD keys (enum starting with QK_TAP_DANCE) to be directly used in keymap
@@ -212,6 +233,7 @@ enum custom_tap_dance_short {
     TD_C,
     TD_V,
     TD_B,
+    TD_N,
 
     TD_A,
     TD_S,
@@ -227,7 +249,10 @@ enum custom_tap_dance_short {
     TD_Y,
 
     TD_LEFT,
-    TD_RIGHT
+    TD_RIGHT,
+
+    TD_SEL_L,
+    TD_SEL_R
 };
 
 tap_dance_action_t tap_dance_actions[] = {
@@ -236,6 +261,7 @@ tap_dance_action_t tap_dance_actions[] = {
     [TDL_C] = ACTION_TAP_DANCE_DOUBLE(KC_C, C(KC_C)),
     [TDL_V] = ACTION_TAP_DANCE_DOUBLE(KC_V, C(KC_V)),
     [TDL_B] = ACTION_TAP_DANCE_DOUBLE(KC_B, C(KC_B)),
+    [TDL_N] = ACTION_TAP_DANCE_HOLD1(KC_N, TG(_NAVIGATION)),
 
     //[TDL_A] = ACTION_TAP_DANCE_TRIPLE(KC_A, KC_NO, C(KC_A)),
     [TDL_A] = ACTION_TAP_DANCE_HOLD(KC_A, C(KC_A)),
@@ -246,15 +272,21 @@ tap_dance_action_t tap_dance_actions[] = {
 
     [TDL_Q] = ACTION_TAP_DANCE_DOUBLE(KC_Q, A(KC_F4)),
     [TDL_W] = ACTION_TAP_DANCE_DOUBLE(KC_W, C(KC_W)),
+
     //[TDL_E] = ACTION_TAP_DANCE_TRIPLE(KC_E, KC_NO, KC_ENTER),
     [TDL_E] = ACTION_TAP_DANCE_HOLD1(KC_E, KC_ENTER),
+
     [TDL_R] = ACTION_TAP_DANCE_HOLD1(KC_R, KC_BSPC),
+
     //[TDL_T] = ACTION_TAP_DANCE_TRIPLE(KC_T, KC_NO, C(KC_T)),
     [TDL_T] = ACTION_TAP_DANCE_HOLD1(KC_T, KC_TAB),
+
     [TDL_Y] = ACTION_TAP_DANCE_DOUBLE(KC_Y, C(KC_Y)),
 
     [TDL_LEFT] = ACTION_TAP_DANCE_HOLD1(KC_LEFT, S(KC_LEFT)),
     [TDL_RIGHT] = ACTION_TAP_DANCE_HOLD1(KC_RIGHT, S(KC_RIGHT)),
+
+    [TDL_SEL_L] = ACTION_TAP_DANCE_HOLD(S(KC_LEFT), C(S(KC_LEFT))), // not used in keymap
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -263,8 +295,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       QK_REP  , KC_1    , KC_2      , KC_3      , KC_4      , KC_5    , KC_6              , KC_7              , KC_8     , KC_9      , KC_0      , KC_MINS  , KC_EQL            , KC_BSPC          , KC_DEL   , KC_HOME,
       KC_TAB            , TD_Q      , TD_W      , TD_E      , TD_R    , TD_T              , TD_Y              , KC_U     , KC_I      , KC_O      , KC_P     , KC_LBRC , KC_RBRC , KC_NUBS                     , KC_END ,
       OSM_LCTL          , TD_A      , TD_S      , TD_D      , TD_F    , TD_G              , KC_H              , KC_J     , KC_K      , KC_L      , KC_SCLN  , KC_QUOT , KC_NUHS , KC_ENT           , C(KC_V)  , KC_PGUP,
-      OSM_RSFT, KC_NUBS , TD_Z      , TD_X      , TD_C      , TD_V    , TD_B              , KC_N              , KC_M     , KC_COMM   , KC_DOT    , KC_SLSH                      , KC_CAPS          , KC_UP    , KC_PGDN,
+      OSM_RSFT, KC_NUBS , TD_Z      , TD_X      , TD_C      , TD_V    , TD_B              , TD_N              , KC_M     , KC_COMM   , KC_DOT    , KC_SLSH                      , KC_CAPS          , KC_UP    , KC_PGDN,
       OSM_LCTL          , OSM_LGUI  , OSM_LALT                        , KC_SPC            , LT(_ALTGR, KC_SPC), A(KC_SPC)            , TG(_CODE) , OSM_LCTL                     , KC_LEFT          , KC_DOWN  , KC_RIGHT
+    ),
+    [_NAVIGATION] = LAYOUT(
+        _______ , _______ , _______   , _______   , _______   , _______ , _______           , _______ , _______ , _______  , _______   , _______   , _______  , _______ , _______ , _______           , _______  ,
+        _______ , _______ , _______   , _______   , _______   , _______ , _______           , _______           , _______  , _______   , _______   , _______  , _______           , _______           , _______  , _______,
+        _______           , _______   , _______   , _______   , _______ , _______           , _______           , _______  , KC_UP     , _______   , _______  , _______ , _______ , _______                      , _______,
+        _______           , _______   , _______   , _______   , _______ , _______           , KC_HOME           , KC_LEFT  , KC_DOWN   , KC_RIGHT  , KC_END   , _______ , _______ , _______           , _______  , _______,
+        _______ , _______ , _______   , _______   , _______   , _______ , _______           , _______           , KC_PGUP  , KC_PGDN   , _______   , _______                      , _______           , S(KC_UP) , _______,
+        _______           , _______   , _______                         , _______           , _______           , _______              , _______   , _______                      , S(KC_LEFT)        , S(KC_DOWN), S(KC_RIGHT)
+    ),
+    [_SELECT] = LAYOUT(
+        _______ , _______ , _______   , _______   , _______   , _______ , _______           , _______ , _______ , _______  , _______   , _______   , _______  , _______ , _______ , _______           , _______  ,
+        _______ , _______ , _______   , _______   , _______   , _______ , _______           , _______           , _______  , _______   , _______   , _______  , _______           , _______           , _______  , _______,
+        _______           , _______   , _______   , _______   , _______ , _______           , _______           , _______  , _______   , _______   , _______  , _______ , _______ , _______                      , _______,
+        _______           , _______   , _______   , _______   , _______ , _______           , _______           , _______  , _______   , _______   , _______  , _______ , _______ , _______           , _______  , _______,
+        _______ , _______ , _______   , _______   , _______   , _______ , _______           , _______           , _______  , _______   , _______   , _______                      , _______           , S(KC_UP) , _______,
+        _______           , _______   , _______                         , _______           , _______           , _______              , _______   , _______                      , S(KC_LEFT)        , S(KC_DOWN), S(KC_RIGHT)
     ),
     [_CODE] = LAYOUT(
       _______ , _______ , _______   , _______   , _______   , _______ , _______           , _______ , _______ , _______  , _______   , _______   , _______  , _______ , _______ , _______           , _______  ,
@@ -282,6 +330,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       _______ , _______ , C(KC_Z)   , C(KC_X)   , C(KC_C)   , C(KC_V) , _______           , KC_HOME           , KC_END   , KC_PGUP   , KC_PGDN   , _______                      , _______           , _______  , _______,
       _______           , _______   , KC_LALT                         , KC_ENT            , _______           , KC_ALGR              , _______   , _______                      , _______           , _______  , _______
     ),
+    /*
+    [_EMPTY] = LAYOUT(
+        _______ , _______ , _______   , _______   , _______   , _______ , _______           , _______ , _______ , _______  , _______   , _______   , _______  , _______ , _______ , _______           , _______  ,
+        _______ , _______ , _______   , _______   , _______   , _______ , _______           , _______           , _______  , _______   , _______   , _______  , _______           , _______           , _______  , _______,
+        _______           , _______   , _______   , _______   , _______ , _______           , _______           , _______  , _______   , _______   , _______  , _______ , _______ , _______                      , _______,
+        _______           , _______   , _______   , _______   , _______ , _______           , _______           , _______  , _______   , _______   , _______  , _______ , _______ , _______           , _______  , _______,
+        _______ , _______ , _______   , _______   , _______   , _______ , _______           , _______           , _______  , _______   , _______   , _______                      , _______           , _______  , _______,
+        _______           , _______   , _______                         , _______           , _______           , _______              , _______   , _______                      , _______           , _______  , _______
+    )
+    */
     /*
     [_NUM] = LAYOUT(
       KC_ESC, KC_F1, MEH(KC_F2), MEH(KC_F3), MEH(KC_F4), KC_F5, KC_F6, KC_F7, KC_F8, KC_MPLY, KC_MUTE, KC_VOLD, KC_VOLU, KC_PSCR, KC_SCRL, KC_MPLY, QK_BOOT,
@@ -337,6 +395,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     uprintf("keycode: %d\n\n", P_LAY);
 
     bool win_mod = (get_mods() == MOD_BIT(KC_LGUI)) || (get_oneshot_mods() == MOD_BIT(KC_LGUI));
+
+    if (record->event.pressed && IS_LAYER_ON(_SELECT)) {
+        // when in _SELECT layer, stay in there until a non-arrow key is pressed
+        switch (keycode) {
+            case KC_LEFT:
+            case KC_RIGHT:
+            case KC_UP:
+            case KC_DOWN:
+            case S(KC_LEFT):
+            case S(KC_RIGHT):
+            case S(KC_UP):
+            case S(KC_DOWN):
+            case TD_LEFT:
+                break;
+
+            default:
+                layer_off(_SELECT);
+        }
+    }
 
     if (keycode == P_PWD && record->event.pressed) {
         SEND_STRING("Somepass1");
