@@ -326,8 +326,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       P_GITRV , _______ , MEH(KC_F2), MEH(KC_F3), MEH(KC_F4), _______ , _______           , _______ , _______ , KC_MPLY  , KC_MUTE   , KC_VOLD   , KC_VOLU  , _______ , _______ , _______           , QK_FLASH ,
       KC_GRV  , _______ , _______   , KC_NUHS   , KC_EUR    , _______ , _______           , _______           , _______  , _______   , KC_MPRV   , KC_MNXT  , _______           , _______           , _______  , _______,
       _______           , _______   , KC_ESC    , KC_ENT    , KC_BSPC , KC_TAB            , C(KC_Y)           , KC_UE    , KC_UP     , KC_OE     , P_PWD    , _______ , _______ , _______                      , _______,
-      _______           , KC_AE     , KC_SS     , KC_DEL    , _______ , KC_TAB            , C(KC_Z)           , KC_LEFT  , KC_DOWN   , KC_RIGHT  , _______  , _______ , _______ , _______           , KC_INS   , _______,
-      _______ , _______ , C(KC_Z)   , C(KC_X)   , C(KC_C)   , C(KC_V) , _______           , KC_HOME           , KC_END   , KC_PGUP   , KC_PGDN   , _______                      , _______           , _______  , _______,
+      _______           , KC_AE     , KC_SS     , KC_DEL    , _______ , KC_TAB            , C(KC_Z)           , KC_LEFT  , KC_DOWN   , KC_RIGHT  , _______  , _______ , _______ , KC_NUHS           , KC_INS   , _______,
+      KC_NUBS , _______ , C(KC_Z)   , C(KC_X)   , C(KC_C)   , C(KC_V) , _______           , KC_HOME           , KC_END   , KC_PGUP   , KC_PGDN   , _______                      , _______           , _______  , _______,
       _______           , _______   , KC_LALT                         , KC_ENT            , _______           , KC_ALGR              , _______   , _______                      , _______           , _______  , _______
     ),
     /*
