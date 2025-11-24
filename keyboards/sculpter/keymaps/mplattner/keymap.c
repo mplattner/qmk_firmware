@@ -375,6 +375,9 @@ bool get_custom_auto_shifted_key(uint16_t keycode, keyrecord_t *record) {
         case KC_SS:
             return true;
 
+        case KC_DEL:
+            return true;
+
         default:
             return false;
     }
