@@ -194,7 +194,8 @@ void tap_dance_hold1_reset(tap_dance_state_t *state, void *user_data) {
 enum custom_keycodes {
     P_PWD = SAFE_RANGE,
     P_LAY,
-    P_GITRV
+    P_GITRV,
+    //KC_SPC_L
 };
 
 // "long" version of TD keys (enum starting with 0)
@@ -361,8 +362,8 @@ bool get_custom_auto_shifted_key(uint16_t keycode, keyrecord_t *record) {
     }
 
     switch (keycode) {
-        // case KC_SPC:
-        //     return true;
+        case KC_SPC:
+            return true;
 
         // enable auto shift for tap dance keys
         case QK_TAP_DANCE ... QK_TAP_DANCE_MAX:
@@ -471,7 +472,7 @@ void autoshift_press_user(uint16_t keycode, bool shifted, keyrecord_t *record) {
             //add_weak_mods(MOD_BIT(KC_LSFT));
         }
         switch (keycode) {
-            //case KC_SPC: TH(KC_SPC, KC_H);
+            //case KC_SPC: TH(KC_SPC, S(KC_SPC));
         }
     }
     else if (IS_LAYER_ON(_CODE)) {
@@ -535,7 +536,7 @@ void autoshift_release_user(uint16_t keycode, bool shifted, keyrecord_t *record)
 
     if (IS_LAYER_ON(_BASE)) {
         switch (keycode) {
-            //case KC_SPC: THU(KC_SPC, KC_H);
+            //case KC_SPC_L: THU(KC_SPC, S(KC_SPC));
         }
     }
     else if (IS_LAYER_ON(_CODE)) {
