@@ -280,7 +280,7 @@ tap_dance_action_t tap_dance_actions[] = {
     [TDL_R] = ACTION_TAP_DANCE_HOLD1(KC_R, KC_BSPC),
 
     //[TDL_T] = ACTION_TAP_DANCE_TRIPLE(KC_T, KC_NO, C(KC_T)),
-    [TDL_T] = ACTION_TAP_DANCE_HOLD1(KC_T, KC_TAB),
+    [TDL_T] = ACTION_TAP_DANCE_HOLD(KC_T, C(KC_T)),
 
     [TDL_Y] = ACTION_TAP_DANCE_DOUBLE(KC_Y, C(KC_Y)),
 
