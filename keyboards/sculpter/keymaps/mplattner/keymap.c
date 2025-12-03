@@ -56,6 +56,8 @@
 #define TD_T TD_T
 #define TD_Y TD_Y
 
+#define TD_NUHS TD_NUHS
+
 #define TD_LEFT TD_LEFT
 #define TD_RIGHT TD_RIGHT
 
@@ -220,6 +222,8 @@ enum custom_tap_dance {
     TDL_T,
     TDL_Y,
 
+    TDL_NUHS,
+
     TDL_LEFT,
     TDL_RIGHT,
 
@@ -248,6 +252,8 @@ enum custom_tap_dance_short {
     TD_R,
     TD_T,
     TD_Y,
+
+    TD_NUHS,
 
     TD_LEFT,
     TD_RIGHT,
@@ -284,6 +290,8 @@ tap_dance_action_t tap_dance_actions[] = {
 
     [TDL_Y] = ACTION_TAP_DANCE_DOUBLE(KC_Y, C(KC_Y)),
 
+    [TDL_NUHS] = ACTION_TAP_DANCE_HOLD1(KC_NUHS, C(KC_SLSH)),
+
     [TDL_LEFT] = ACTION_TAP_DANCE_HOLD1(KC_LEFT, S(KC_LEFT)),
     [TDL_RIGHT] = ACTION_TAP_DANCE_HOLD1(KC_RIGHT, S(KC_RIGHT)),
 
@@ -295,7 +303,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       KC_ESC  , KC_F1   , KC_F2     , KC_F3     , KC_F4     , KC_F5   , KC_F6             , KC_F7   , KC_F8   , KC_F9    , KC_F10    , KC_F11    , KC_F12   , KC_PSCR , KC_SCRL , KC_PAUS          , QK_REBOOT,
       QK_REP  , KC_1    , KC_2      , KC_3      , KC_4      , KC_5    , KC_6              , KC_7              , KC_8     , KC_9      , KC_0      , KC_MINS  , KC_EQL            , KC_BSPC          , KC_DEL   , KC_HOME,
       KC_TAB            , TD_Q      , TD_W      , TD_E      , TD_R    , TD_T              , TD_Y              , KC_U     , KC_I      , KC_O      , KC_P     , KC_LBRC , KC_RBRC , KC_NUBS                     , KC_END ,
-      OSM_LCTL          , TD_A      , TD_S      , TD_D      , TD_F    , TD_G              , KC_H              , KC_J     , KC_K      , KC_L      , KC_SCLN  , KC_QUOT , KC_NUHS , KC_ENT           , C(KC_V)  , KC_PGUP,
+      OSM_LCTL          , TD_A      , TD_S      , TD_D      , TD_F    , TD_G              , KC_H              , KC_J     , KC_K      , KC_L      , KC_SCLN  , KC_QUOT , TD_NUHS , KC_ENT           , C(KC_V)  , KC_PGUP,
       OSM_RSFT, KC_NUBS , TD_Z      , TD_X      , TD_C      , TD_V    , TD_B              , TD_N              , KC_M     , KC_COMM   , KC_DOT    , KC_SLSH                      , KC_CAPS          , KC_UP    , KC_PGDN,
       OSM_LCTL          , OSM_LGUI  , OSM_LALT                        , KC_SPC            , LT(_ALTGR, KC_SPC), A(KC_SPC)            , TG(_CODE) , OSM_LCTL                     , KC_LEFT          , KC_DOWN  , KC_RIGHT
     ),
