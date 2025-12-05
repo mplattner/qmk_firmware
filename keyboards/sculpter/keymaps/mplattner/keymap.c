@@ -119,7 +119,14 @@ void tap_dance_triple_finished(tap_dance_state_t *state, void *user_data) {
         }
     }
     else if (state->count == 3) {
-        tap_code16(triple->kc3);
+        if (triple->kc3 == KC_NO) {
+            tap_code16(triple->kc1);
+            tap_code16(triple->kc1);
+            tap_code16(triple->kc1);
+        }
+        else {
+            tap_code16(triple->kc3);
+        }
     }
 }
 
@@ -278,7 +285,7 @@ tap_dance_action_t tap_dance_actions[] = {
     [TDL_G] = ACTION_TAP_DANCE_HOLD(KC_G, KC_TAB),
 
     [TDL_Q] = ACTION_TAP_DANCE_DOUBLE(KC_Q, A(KC_F4)),
-    [TDL_W] = ACTION_TAP_DANCE_HOLD(KC_W, C(KC_W)),
+    [TDL_W] = ACTION_TAP_DANCE_TRIPLE(KC_W, C(KC_W), KC_NO),
 
     //[TDL_E] = ACTION_TAP_DANCE_TRIPLE(KC_E, KC_NO, KC_ENTER),
     [TDL_E] = ACTION_TAP_DANCE_HOLD1(KC_E, KC_ENTER),
