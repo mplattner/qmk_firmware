@@ -13,7 +13,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include QMK_KEYBOARD_H
+
+//#include QMK_KEYBOARD_H
+
+#include "keyboards/sculpter/sculpter.h"
+#include <quantum/process_keycode/process_tap_dance.h>
 
 #include "print.h"
 
@@ -66,6 +70,11 @@
 
 const char git_revision[] PROGMEM = GIT_REVISION;
 
+static uint16_t last_keycode;
+static uint16_t second_last_keycode;
+static uint32_t last_keypress_timer = 0;
+static uint32_t second_last_keypress_timer = 0;
+
 // Defines names for use in layer keycodes and the keymap
 enum layer_names {
     _BASE,
@@ -89,7 +98,7 @@ typedef struct {
 
 typedef struct {
     uint16_t tap;
-    uint16_t hold;
+    uint16_t hold_or_interrupted;
 } tap_dance_hold1_t;
 
 #define ACTION_TAP_DANCE_TRIPLE(kc1, kc2, kc3) \
@@ -100,8 +109,8 @@ typedef struct {
     { .fn = {NULL, tap_dance_hold_finished, NULL, NULL}, .user_data = (void *)&((tap_dance_hold_t){tap, hold}), }
 
 // does support key repeat for hold key
-#define ACTION_TAP_DANCE_HOLD1(tap, hold) \
-    { .fn = {tap_dance_hold1_on_each_tap, tap_dance_hold1_finished, tap_dance_hold1_reset, NULL}, .user_data = (void *)&((tap_dance_hold1_t){tap, hold}), }
+#define ACTION_TAP_DANCE_HOLD1(tap, hold_or_interrupted) \
+    { .fn = {tap_dance_hold1_on_each_tap, tap_dance_hold1_finished, tap_dance_hold1_reset, NULL}, .user_data = (void *)&((tap_dance_hold1_t){tap, hold_or_interrupted}), }
 
 void tap_dance_triple_finished(tap_dance_state_t *state, void *user_data) {
     tap_dance_triple_t *triple = (tap_dance_triple_t *)user_data;
@@ -167,17 +176,20 @@ void tap_dance_hold1_finished(tap_dance_state_t *state, void *user_data) {
         register_code16(hold1->tap);
     }
     else if (state->count == 2) {
-        // when interruped by another key, it's likely not an intentional tap-and-hold
-        if (state->pressed && !state->interrupted) {
+        // only not interrupted tap dances and not while typing other keys are considered as intentional tap dances
+        // interrupted means: other key than the current tap dance key pressed within TAPPING_TERM → likely ordinary typing
+        if ((! state->interrupted && (timer_elapsed32(second_last_keypress_timer) > USER_TAP_DANCE_TIMEOUT))) {
+            uprintf("seclasttimer: %9u\n", timer_elapsed32(second_last_keypress_timer));
+
             // when key is of type TD(KC_*), then toggle layer
-            if (hold1->hold >= QK_TOGGLE_LAYER && hold1->hold <= QK_TOGGLE_LAYER_MAX) {
-                layer_invert(QK_TOGGLE_LAYER_GET_LAYER(hold1->hold));
+            if (hold1->hold_or_interrupted >= QK_TOGGLE_LAYER && hold1->hold_or_interrupted <= QK_TOGGLE_LAYER_MAX) {
+                layer_invert(QK_TOGGLE_LAYER_GET_LAYER(hold1->hold_or_interrupted));
             }
             else {
-                register_code16(hold1->hold);
+                register_code16(hold1->hold_or_interrupted);
 
                 // special case for S(KC_LEFT)
-                if (hold1->hold == S(KC_LEFT)) {
+                if (hold1->hold_or_interrupted == S(KC_LEFT)) {
                     layer_on(_SELECT);
                 }
             }
@@ -196,7 +208,7 @@ void tap_dance_hold1_reset(tap_dance_state_t *state, void *user_data) {
         wait_ms(TAP_CODE_DELAY);
         unregister_code16(hold1->tap);
     } else if (state->count == 2) {
-        unregister_code16(hold1->hold);
+        unregister_code16(hold1->hold_or_interrupted);
     }
 }
 
@@ -269,41 +281,76 @@ enum custom_tap_dance_short {
     TD_SEL_R
 };
 
+KEYCODE_STRING_NAMES_USER(
+    KEYCODE_STRING_NAME(TD_Z),
+    KEYCODE_STRING_NAME(TD_X),
+    KEYCODE_STRING_NAME(TD_C),
+    KEYCODE_STRING_NAME(TD_V),
+    KEYCODE_STRING_NAME(TD_B),
+    KEYCODE_STRING_NAME(TD_N),
+
+    KEYCODE_STRING_NAME(TD_A),
+    KEYCODE_STRING_NAME(TD_S),
+    KEYCODE_STRING_NAME(TD_D),
+    KEYCODE_STRING_NAME(TD_F),
+    KEYCODE_STRING_NAME(TD_G),
+
+    KEYCODE_STRING_NAME(TD_Q),
+    KEYCODE_STRING_NAME(TD_W),
+    KEYCODE_STRING_NAME(TD_E),
+    KEYCODE_STRING_NAME(TD_R),
+    KEYCODE_STRING_NAME(TD_T),
+    KEYCODE_STRING_NAME(TD_Y),
+
+    KEYCODE_STRING_NAME(TD_NUHS),
+
+    KEYCODE_STRING_NAME(TD_LEFT),
+    KEYCODE_STRING_NAME(TD_RIGHT),
+
+    KEYCODE_STRING_NAME(TD_SEL_L),
+    KEYCODE_STRING_NAME(TD_SEL_R)
+);
+
 tap_dance_action_t tap_dance_actions[] = {
-    [TDL_Z] = ACTION_TAP_DANCE_DOUBLE(KC_Z, C(KC_Z)),
-    [TDL_X] = ACTION_TAP_DANCE_DOUBLE(KC_X, C(KC_X)),
-    [TDL_C] = ACTION_TAP_DANCE_DOUBLE(KC_C, C(KC_C)),
-    [TDL_V] = ACTION_TAP_DANCE_DOUBLE(KC_V, C(KC_V)),
-    [TDL_B] = ACTION_TAP_DANCE_DOUBLE(KC_B, C(KC_B)),
-    [TDL_N] = ACTION_TAP_DANCE_HOLD1(KC_N, TG(_NAVIGATION)),
+    /*  0 */ [TDL_Z] = ACTION_TAP_DANCE_DOUBLE(KC_Z, C(KC_Z)),
+    /*  1 */ [TDL_X] = ACTION_TAP_DANCE_DOUBLE(KC_X, C(KC_X)),
+    /*  2 */ [TDL_C] = ACTION_TAP_DANCE_DOUBLE(KC_C, C(KC_C)),
+    /*  3 */ [TDL_V] = ACTION_TAP_DANCE_DOUBLE(KC_V, C(KC_V)),
+    /*  4 */ [TDL_B] = ACTION_TAP_DANCE_DOUBLE(KC_B, C(KC_B)),
+    /*  5 */ [TDL_N] = ACTION_TAP_DANCE_HOLD1(KC_N, TG(_NAVIGATION)),
 
     //[TDL_A] = ACTION_TAP_DANCE_TRIPLE(KC_A, KC_NO, C(KC_A)),
-    [TDL_A] = ACTION_TAP_DANCE_HOLD1(KC_A, C(KC_A)),
-    [TDL_S] = ACTION_TAP_DANCE_TRIPLE(KC_S, KC_NO, C(KC_S)),
-    [TDL_D] = ACTION_TAP_DANCE_HOLD1(KC_D, KC_DEL),
-    [TDL_F] = ACTION_TAP_DANCE_HOLD1(KC_F, C(KC_F)),
-    [TDL_G] = ACTION_TAP_DANCE_HOLD1(KC_G, KC_TAB),
+    /*  6 */ [TDL_A] = ACTION_TAP_DANCE_HOLD1(KC_A, C(KC_A)),
+    /*  7 */ [TDL_S] = ACTION_TAP_DANCE_TRIPLE(KC_S, KC_NO, C(KC_S)),
+    /*  8 */ [TDL_D] = ACTION_TAP_DANCE_HOLD1(KC_D, KC_DEL),
+    /*  9 */ [TDL_F] = ACTION_TAP_DANCE_HOLD1(KC_F, C(KC_F)),
+    /* 10 */ [TDL_G] = ACTION_TAP_DANCE_HOLD1(KC_G, KC_TAB),
 
-    [TDL_Q] = ACTION_TAP_DANCE_DOUBLE(KC_Q, A(KC_F4)),
-    [TDL_W] = ACTION_TAP_DANCE_TRIPLE(KC_W, C(KC_W), KC_NO),
+    /* 11 */ [TDL_Q] = ACTION_TAP_DANCE_DOUBLE(KC_Q, A(KC_F4)),
+    /* 12 */ [TDL_W] = ACTION_TAP_DANCE_TRIPLE(KC_W, C(KC_W), KC_NO),
 
     //[TDL_E] = ACTION_TAP_DANCE_TRIPLE(KC_E, KC_NO, KC_ENTER),
-    [TDL_E] = ACTION_TAP_DANCE_HOLD1(KC_E, KC_ENTER),
+    /* 13 */ [TDL_E] = ACTION_TAP_DANCE_HOLD1(KC_E, KC_ENTER),
 
-    [TDL_R] = ACTION_TAP_DANCE_HOLD1(KC_R, KC_BSPC),
+    /* 14 */ [TDL_R] = ACTION_TAP_DANCE_HOLD1(KC_R, KC_BSPC),
 
     //[TDL_T] = ACTION_TAP_DANCE_TRIPLE(KC_T, KC_NO, C(KC_T)),
-    [TDL_T] = ACTION_TAP_DANCE_HOLD1(KC_T, C(KC_T)),
+    /* 15 */ [TDL_T] = ACTION_TAP_DANCE_HOLD1(KC_T, C(KC_T)),
 
-    [TDL_Y] = ACTION_TAP_DANCE_DOUBLE(KC_Y, C(KC_Y)),
+    /* 16 */ [TDL_Y] = ACTION_TAP_DANCE_DOUBLE(KC_Y, C(KC_Y)),
 
-    [TDL_NUHS] = ACTION_TAP_DANCE_HOLD1(KC_NUHS, C(KC_SLSH)),
+    /* 17 */ [TDL_NUHS] = ACTION_TAP_DANCE_HOLD1(KC_NUHS, C(KC_SLSH)),
 
-    [TDL_LEFT] = ACTION_TAP_DANCE_HOLD1(KC_LEFT, S(KC_LEFT)),
-    [TDL_RIGHT] = ACTION_TAP_DANCE_HOLD1(KC_RIGHT, S(KC_RIGHT)),
+    /* 18 */ [TDL_LEFT] = ACTION_TAP_DANCE_HOLD1(KC_LEFT, S(KC_LEFT)),
+    /* 19 */ [TDL_RIGHT] = ACTION_TAP_DANCE_HOLD1(KC_RIGHT, S(KC_RIGHT)),
 
-    [TDL_SEL_L] = ACTION_TAP_DANCE_HOLD(S(KC_LEFT), C(S(KC_LEFT))), // not used in keymap
+    /* 20 */ [TDL_SEL_L] = ACTION_TAP_DANCE_HOLD(S(KC_LEFT), C(S(KC_LEFT))), // not used in keymap
 };
+
+const char* td_names[] = {"TD_Z", "TD_X", "TD_C", "TD_V", "TD_B", "TD_N",
+"TD_A", "TD_S", "TD_D", "TD_F", "TD_G",
+"TD_Q", "TD_W", "TD_E", "TD_R", "TD_T", "TD_Y",
+"TD_NUHS", "TD_LEFT", "TD_RIGHT", "TD_SEL_L", "TD_SEL_R"};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE] = LAYOUT(
@@ -410,8 +457,22 @@ void oneshot_locked_mods_changed_user(uint8_t mods) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    uprintf("keycode: %d\n", keycode);
-    uprintf("keycode: %d\n\n", P_LAY);
+
+    #ifdef CONSOLE_ENABLE
+    tap_dance_state_t* tdstate = {0};
+
+    if (IS_QK_TAP_DANCE(keycode)) {
+        tdstate = tap_dance_get_state(QK_TAP_DANCE_GET_INDEX(keycode));
+        //key_name = td_names[QK_TAP_DANCE_GET_INDEX(keycode)];
+    }
+
+    const char *key_name = get_keycode_string(keycode);
+    uprintf("KL: kc: %s, lkc: 0x%04X, pressed: %u, time: %5u, tdint: %u, tdcount: %u, sincelast: %9u\n", key_name, last_keycode, record->event.pressed, record->event.time, tdstate->interrupted, tdstate->count, timer_elapsed32(last_keypress_timer));
+
+    if (!record->event.pressed) {
+        print("\n");
+    }
+    #endif
 
     bool win_mod = (get_mods() == MOD_BIT(KC_LGUI)) || (get_oneshot_mods() == MOD_BIT(KC_LGUI));
 
@@ -460,13 +521,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return false;
     }
     */
+
+    if (record->event.pressed) {
+        if (keycode != last_keycode) {
+            second_last_keycode = last_keycode;
+            last_keycode = keycode;
+
+            second_last_keypress_timer = last_keypress_timer;
+            last_keypress_timer = timer_read32();
+        }
+    }
+
     return true;
 }
 
 void autoshift_press_user(uint16_t keycode, bool shifted, keyrecord_t *record) {
 
-    print("\n");
-    uprintf("keycode: %d\n", keycode);
 
     bool l_shift_held = get_mods() & MOD_BIT(KC_LSFT);
     bool l_shift_held_osm = get_oneshot_mods() & MOD_BIT(KC_LSFT);

@@ -30,3 +30,5 @@ TAP_DANCE_ENABLE = yes
 REPEAT_KEY_ENABLE = yes
 
 EXTRAFLAGS += -DGIT_REVISION=\"$(shell git rev-parse --short=7 HEAD)\"
+
+KEYCODE_STRING_ENABLE = no

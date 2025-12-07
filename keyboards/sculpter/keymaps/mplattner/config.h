@@ -17,5 +17,7 @@
 #define TAPPING_TERM 190
 #define TAPPING_TERM_PER_KEY
 
+#define USER_TAP_DANCE_TIMEOUT 780
+
 // trying to fix issue that occurs since enabling AUTO_SHIFT_MODIFIERS, see https://github.com/qmk/qmk_firmware/issues/19671
 //#define TAP_CODE_DELAY 20
