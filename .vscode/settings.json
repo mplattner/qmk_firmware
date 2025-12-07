@@ -29,7 +29,9 @@
         "ranges": "c",
         "type_traits": "c",
         "utility": "c",
-        "xstddef": "c"
+        "xstddef": "c",
+        "bitset": "c",
+        "chrono": "c"
     },
     // Configure glob patterns for excluding files and folders.
     "files.exclude": {
@@ -37,39 +39,14 @@
         "**/*.bin": true,
         "**/*.hex": true,
         "**/*.uf2": true,
-        "keyboards/a*": true,
-        "keyboards/b*": true,
-        "keyboards/c*": true,
-        "keyboards/d*": true,
-        "keyboards/e*": true,
-        "keyboards/f*": true,
-        "keyboards/g*": true,
-        "keyboards/h*": true,
-        "keyboards/i*": true,
-        "keyboards/j*": true,
-        "keyboards/k*": true,
-        "keyboards/l*": true,
-        "keyboards/m*": true,
-        "keyboards/n*": true,
-        "keyboards/o*": true,
-        "keyboards/p*": true,
-        "keyboards/q*": true,
-        "keyboards/r*": true,
-        "keyboards/sa*": true,
-        "keyboards/se*": true,
-        "keyboards/sh*": true,
-        "keyboards/si*": true,
-        "keyboards/sk*": true,
-        "keyboards/so*": true,
-        "keyboards/sp*": true,
-        "keyboards/st*": true,
-        "keyboards/t*": true,
-        "keyboards/u*": true,
-        "keyboards/v*": true,
-        "keyboards/w*": true,
-        "keyboards/x*": true,
-        "keyboards/y*": true,
-        "keyboards/z*": true
+        "**/keyboards/[!s]*/**": true,
+        "**/keyboards/s[!c]*/**": true,
+        "**/keyboards/sc[!u]*/**": true,
+        "**/keyboards/scu[!l]*/**": true,
+        "**/keyboards/scul[!p]*/**": true,
+        "**/keyboards/sculp[!t]*/**": true,
+        "**/keyboards/sculpt[!e]*/**": true,
+        "**/keyboards/sculpte[!r]*/**": true
     },
     "python.formatting.provider": "yapf",
     "terminal.integrated.defaultProfile.windows": "QMK_MSYS",
@@ -84,11 +61,7 @@
             },
             "path": "C:/QMK_MSYS/usr/bin/bash.exe"
         }
-    }
-    "[json]": {
-        "editor.formatOnSave": false
     },
-    "clangd.arguments": ["--header-insertion=never"],
     "json.schemas": [
         {
             "fileMatch": ["qmk.json"],
