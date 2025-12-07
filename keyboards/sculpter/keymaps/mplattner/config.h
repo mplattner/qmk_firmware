@@ -19,5 +19,7 @@
 
 #define USER_TAP_DANCE_TIMEOUT 780
 
+#define SPECULATIVE_HOLD
+
 // trying to fix issue that occurs since enabling AUTO_SHIFT_MODIFIERS, see https://github.com/qmk/qmk_firmware/issues/19671
 //#define TAP_CODE_DELAY 20

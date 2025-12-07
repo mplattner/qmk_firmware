@@ -70,6 +70,10 @@
 
 const char git_revision[] PROGMEM = GIT_REVISION;
 
+// testing real "sticky keys", activating right after tapping the key
+// bool is_lctl_active = false;
+// uint16_t lctl_timer = 0;
+
 static uint16_t last_keycode;
 static uint16_t second_last_keycode;
 static uint32_t last_keypress_timer = 0;
@@ -511,6 +515,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 return false;
         }
     }
+
+    // testing real "sticky keys"
+    // else if (keycode == KC_LCTL) {
+    //     if (record->event.pressed) {
+    //         if (!is_lctl_active) {
+    //             is_lctl_active = true;
+    //             register_code(KC_LCTL);
+    //         }
+    //         lctl_timer = timer_read();
+    //     }
+    //     return false;
+    // }
+
     /*
     else if (keycode == P_LAY && record->event.pressed) {
         if (IS_LAYER_ON(_CODE)) {
@@ -534,6 +551,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     return true;
 }
+
+// void matrix_scan_user(void) { // The very important timer.
+//     if (is_lctl_active) {
+//         if (timer_elapsed(lctl_timer) > 500) {
+//             unregister_code(KC_LCTL);
+//             is_lctl_active = false;
+//         }
+//     }
+// }
 
 void autoshift_press_user(uint16_t keycode, bool shifted, keyrecord_t *record) {
 
