@@ -79,5 +79,6 @@
             "fileMatch": ["keymap.json"],
             "url": "./data/schemas/keymap.jsonschema"
         }
-    ]
+    ],
+    "editor.inlayHints.enabled": "offUnlessPressed"
 }
