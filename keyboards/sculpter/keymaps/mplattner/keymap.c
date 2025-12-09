@@ -584,6 +584,7 @@ void autoshift_press_user(uint16_t keycode, bool shifted, keyrecord_t *record) {
         }
         switch (keycode) {
             //case KC_SPC: TH(KC_SPC, S(KC_SPC));
+            case KC_ENTER: TH(KC_ENTER, C(KC_ENTER));
         }
     }
     else if (IS_LAYER_ON(_CODE)) {
@@ -648,6 +649,7 @@ void autoshift_release_user(uint16_t keycode, bool shifted, keyrecord_t *record)
     if (IS_LAYER_ON(_BASE)) {
         switch (keycode) {
             //case KC_SPC_L: THU(KC_SPC, S(KC_SPC));
+            case KC_ENTER: THU(KC_ENTER, C(KC_ENTER));
         }
     }
     else if (IS_LAYER_ON(_CODE)) {
