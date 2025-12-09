@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "process_repeat_key.h"
+#include "process_auto_shift.h"
 #include "repeat_key.h"
 #include "keycodes.h"
 #include "quantum_keycodes.h"
@@ -103,7 +104,19 @@ bool process_repeat_key(uint16_t keycode, keyrecord_t* record) {
     }
 
     if (keycode == QK_REPEAT_KEY) {
+        // temporarily disable auto shift so that holding the QK_REP key doesn't trigger auto-shift but instead repeats multiple times
+        // applying shift is handled by autoshift_release_user()
+        #ifdef AUTO_SHIFT_ENABLE
+        bool autoshift_state_enabled = get_autoshift_state();
+        autoshift_disable();
+        #endif
+
         repeat_key_invoke(&record->event);
+
+        #ifdef AUTO_SHIFT_ENABLE
+        if (autoshift_state_enabled) { autoshift_enable(); }
+        #endif
+
         return false;
 #ifndef NO_ALT_REPEAT_KEY
     } else if (keycode == QK_ALT_REPEAT_KEY) {

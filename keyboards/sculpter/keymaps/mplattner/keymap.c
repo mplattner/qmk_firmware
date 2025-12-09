@@ -628,7 +628,7 @@ void autoshift_press_user(uint16_t keycode, bool shifted, keyrecord_t *record) {
         }
     }
 
-    if (shifted && keycode != QK_REP) { // tried to fix that holding repeat key sends shifted version of last key
+    if (shifted) {
         add_weak_mods(MOD_BIT(KC_LSFT));
     }
 
@@ -645,6 +645,15 @@ void autoshift_release_user(uint16_t keycode, bool shifted, keyrecord_t *record)
     // bool r_shift_held_osm = get_oneshot_mods() & MOD_BIT(KC_RSFT);
 
     // bool shift_held = l_shift_held || r_shift_held || l_shift_held_osm || r_shift_held_osm;
+
+    // add RSHIFT modifier to QMK's key repeat feature in case the current (last) key was auto-shifted
+    // this is needed as the shift modifier gets added in autoshift_press_user only and key repeat doesn't know about it
+    // the rest of the modifiers should be correct, so we use get_last_mods as a start
+    if (shifted) {
+        uint8_t remembered_mods = get_last_mods();
+        remembered_mods |= MOD_BIT(KC_RSFT); // RSFT is needed here; probably as LSFT is remapped using software? (however, weird: in autoshift_press_user it works with LSFT, but there it's a weak-mod)
+        set_last_mods(remembered_mods);
+    }
 
     if (IS_LAYER_ON(_BASE)) {
         switch (keycode) {
