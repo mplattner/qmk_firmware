@@ -450,6 +450,15 @@ bool get_custom_auto_shifted_key(uint16_t keycode, keyrecord_t *record) {
     }
 }
 
+uint16_t get_autoshift_timeout(uint16_t keycode, keyrecord_t *record) {
+    switch(keycode) {
+        case KC_ENTER:
+            return 275;
+        default:
+            return get_generic_autoshift_timeout();
+    }
+}
+
 void oneshot_locked_mods_changed_user(uint8_t mods) {
     clear_oneshot_locked_mods();
     unregister_mods(mods);

@@ -8,6 +8,8 @@
 
 #define AUTO_SHIFT_MODIFIERS 1
 
+#define AUTO_SHIFT_TIMEOUT_PER_KEY
+
 //#define DEBUG_MATRIX_SCAN_RATE
 
 // number of times TT(layer) needs to be tapped to toggle layer
