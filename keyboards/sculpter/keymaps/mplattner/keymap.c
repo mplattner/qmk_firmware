@@ -189,6 +189,9 @@ void tap_dance_hold1_finished(tap_dance_state_t *state, void *user_data) {
             if (hold1->hold_or_interrupted >= QK_TOGGLE_LAYER && hold1->hold_or_interrupted <= QK_TOGGLE_LAYER_MAX) {
                 layer_invert(QK_TOGGLE_LAYER_GET_LAYER(hold1->hold_or_interrupted));
             }
+            else if (hold1->hold_or_interrupted >= QK_ONE_SHOT_MOD && hold1->hold_or_interrupted <= QK_ONE_SHOT_MOD_MAX) {
+                add_oneshot_mods(QK_ONE_SHOT_MOD_GET_MODS(hold1->hold_or_interrupted));
+            }
             else {
                 register_code16(hold1->hold_or_interrupted);
 
@@ -325,7 +328,7 @@ tap_dance_action_t tap_dance_actions[] = {
 
     //[TDL_A] = ACTION_TAP_DANCE_TRIPLE(KC_A, KC_NO, C(KC_A)),
     /*  6 */ [TDL_A] = ACTION_TAP_DANCE_HOLD1(KC_A, C(KC_A)),
-    /*  7 */ [TDL_S] = ACTION_TAP_DANCE_TRIPLE(KC_S, KC_NO, C(KC_S)),
+    /*  7 */ [TDL_S] = ACTION_TAP_DANCE_HOLD1(KC_S, OSM(MOD_LCTL)),
     /*  8 */ [TDL_D] = ACTION_TAP_DANCE_HOLD1(KC_D, KC_DEL),
     /*  9 */ [TDL_F] = ACTION_TAP_DANCE_HOLD1(KC_F, C(KC_F)),
     /* 10 */ [TDL_G] = ACTION_TAP_DANCE_HOLD1(KC_G, KC_TAB),
