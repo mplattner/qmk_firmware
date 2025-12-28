@@ -60,6 +60,9 @@
 #define TD_T TD_T
 #define TD_Y TD_Y
 
+#define TD_U TD_U
+#define TD_O TD_O
+
 #define TD_NUHS TD_NUHS
 
 #define TD_LEFT TD_LEFT
@@ -112,6 +115,10 @@ typedef struct {
 #define ACTION_TAP_DANCE_HOLD(tap, hold) \
     { .fn = {NULL, tap_dance_hold_finished, NULL, NULL}, .user_data = (void *)&((tap_dance_hold_t){tap, hold}), }
 
+// tap: tap, tap-tap: hold, tap-hold: shift(hold); used for u, U, ü, Ü
+#define ACTION_TAP_DANCE_HOLD_SHIFT(tap, hold) \
+    { .fn = {NULL, tap_dance_hold_shift_finished, NULL, NULL}, .user_data = (void *)&((tap_dance_hold_t){tap, hold}), }
+
 // does support key repeat for hold key
 #define ACTION_TAP_DANCE_HOLD1(tap, hold_or_interrupted) \
     { .fn = {tap_dance_hold1_on_each_tap, tap_dance_hold1_finished, tap_dance_hold1_reset, NULL}, .user_data = (void *)&((tap_dance_hold1_t){tap, hold_or_interrupted}), }
@@ -156,6 +163,22 @@ void tap_dance_hold_finished(tap_dance_state_t *state, void *user_data) {
         else {
             tap_code16(tuple->tap);
             tap_code16(tuple->tap);
+        }
+    }
+}
+
+void tap_dance_hold_shift_finished(tap_dance_state_t *state, void *user_data) {
+    tap_dance_hold_t *tuple = (tap_dance_hold_t *)user_data;
+
+    if (state->count == 1) {
+        tap_code16(tuple->tap);
+    }
+    else if (state->count == 2) {
+        if (state->pressed) {
+            tap_code16(LSFT(tuple->hold));
+        }
+        else {
+            tap_code16(tuple->hold);
         }
     }
 }
@@ -248,6 +271,9 @@ enum custom_tap_dance {
     TDL_T,
     TDL_Y,
 
+    TDL_U,
+    TDL_O,
+
     TDL_NUHS,
 
     TDL_LEFT,
@@ -279,6 +305,9 @@ enum custom_tap_dance_short {
     TD_T,
     TD_Y,
 
+    TD_U,
+    TD_O,
+
     TD_NUHS,
 
     TD_LEFT,
@@ -308,6 +337,9 @@ KEYCODE_STRING_NAMES_USER(
     KEYCODE_STRING_NAME(TD_R),
     KEYCODE_STRING_NAME(TD_T),
     KEYCODE_STRING_NAME(TD_Y),
+
+    KEYCODE_STRING_NAME(TD_U),
+    KEYCODE_STRING_NAME(TD_O),
 
     KEYCODE_STRING_NAME(TD_NUHS),
 
@@ -346,12 +378,15 @@ tap_dance_action_t tap_dance_actions[] = {
 
     /* 16 */ [TDL_Y] = ACTION_TAP_DANCE_DOUBLE(KC_Y, C(KC_Y)),
 
-    /* 17 */ [TDL_NUHS] = ACTION_TAP_DANCE_HOLD1(KC_NUHS, C(KC_SLSH)),
+    /* 17 */ [TDL_U] = ACTION_TAP_DANCE_HOLD_SHIFT(KC_U, KC_UE),
+    /* 18 */ [TDL_O] = ACTION_TAP_DANCE_HOLD_SHIFT(KC_O, KC_OE),
 
-    /* 18 */ [TDL_LEFT] = ACTION_TAP_DANCE_HOLD1(KC_LEFT, S(KC_LEFT)),
-    /* 19 */ [TDL_RIGHT] = ACTION_TAP_DANCE_HOLD1(KC_RIGHT, S(KC_RIGHT)),
+    /* 19 */ [TDL_NUHS] = ACTION_TAP_DANCE_HOLD1(KC_NUHS, C(KC_SLSH)),
 
-    /* 20 */ [TDL_SEL_L] = ACTION_TAP_DANCE_HOLD(S(KC_LEFT), C(S(KC_LEFT))), // not used in keymap
+    /* 20 */ [TDL_LEFT] = ACTION_TAP_DANCE_HOLD1(KC_LEFT, S(KC_LEFT)),
+    /* 21 */ [TDL_RIGHT] = ACTION_TAP_DANCE_HOLD1(KC_RIGHT, S(KC_RIGHT)),
+
+    /* 22 */ [TDL_SEL_L] = ACTION_TAP_DANCE_HOLD(S(KC_LEFT), C(S(KC_LEFT))), // not used in keymap
 };
 
 const char* td_names[] = {"TD_Z", "TD_X", "TD_C", "TD_V", "TD_B", "TD_N",
@@ -363,7 +398,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE] = LAYOUT(
       KC_ESC  , KC_F1   , KC_F2     , KC_F3     , KC_F4     , KC_F5   , KC_F6             , KC_F7   , KC_F8   , KC_F9    , KC_F10    , KC_F11    , KC_F12   , KC_PSCR , KC_SCRL , KC_PAUS          , QK_REBOOT,
       QK_REP  , KC_1    , KC_2      , KC_3      , KC_4      , KC_5    , KC_6              , KC_7              , KC_8     , KC_9      , KC_0      , KC_MINS  , KC_EQL            , KC_BSPC          , KC_DEL   , KC_HOME,
-      KC_TAB            , TD_Q      , TD_W      , TD_E      , TD_R    , TD_T              , TD_Y              , KC_U     , KC_I      , KC_O      , KC_P     , KC_LBRC , KC_RBRC , KC_NUBS                     , KC_END ,
+      KC_TAB            , TD_Q      , TD_W      , TD_E      , TD_R    , TD_T              , TD_Y              , TD_U     , KC_I      , TD_O      , KC_P     , KC_LBRC , KC_RBRC , KC_NUBS                     , KC_END ,
       OSM_LCTL          , TD_A      , TD_S      , TD_D      , TD_F    , TD_G              , KC_H              , KC_J     , KC_K      , KC_L      , KC_SCLN  , KC_QUOT , TD_NUHS , KC_ENT           , C(KC_V)  , KC_PGUP,
       OSM_RSFT, KC_NUBS , TD_Z      , TD_X      , TD_C      , TD_V    , TD_B              , TD_N              , KC_M     , KC_COMM   , KC_DOT    , KC_SLSH                      , KC_CAPS          , KC_UP    , KC_PGDN,
       OSM_LCTL          , OSM_LGUI  , OSM_LALT                        , KC_SPC            , LT(_ALTGR, KC_SPC), A(KC_SPC)            , TG(_CODE) , OSM_LCTL                     , KC_LEFT          , KC_DOWN  , KC_RIGHT
