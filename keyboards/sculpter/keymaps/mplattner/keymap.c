@@ -115,9 +115,11 @@ typedef struct {
 #define ACTION_TAP_DANCE_HOLD(tap, hold) \
     { .fn = {NULL, tap_dance_hold_finished, NULL, NULL}, .user_data = (void *)&((tap_dance_hold_t){tap, hold}), }
 
+/*
 // tap: tap, tap-tap: hold, tap-hold: shift(hold); used for u, U, ü, Ü
 #define ACTION_TAP_DANCE_HOLD_SHIFT(tap, hold) \
     { .fn = {NULL, tap_dance_hold_shift_finished, NULL, NULL}, .user_data = (void *)&((tap_dance_hold_t){tap, hold}), }
+*/
 
 // does support key repeat for hold key
 #define ACTION_TAP_DANCE_HOLD1(tap, hold_or_interrupted) \
@@ -167,6 +169,7 @@ void tap_dance_hold_finished(tap_dance_state_t *state, void *user_data) {
     }
 }
 
+/*
 void tap_dance_hold_shift_finished(tap_dance_state_t *state, void *user_data) {
     tap_dance_hold_t *tuple = (tap_dance_hold_t *)user_data;
 
@@ -182,6 +185,7 @@ void tap_dance_hold_shift_finished(tap_dance_state_t *state, void *user_data) {
         }
     }
 }
+*/
 
 void tap_dance_hold1_on_each_tap(tap_dance_state_t *state, void *user_data) {
     tap_dance_hold1_t *hold1 = (tap_dance_hold1_t *)user_data;
@@ -378,8 +382,8 @@ tap_dance_action_t tap_dance_actions[] = {
 
     /* 16 */ [TDL_Y] = ACTION_TAP_DANCE_DOUBLE(KC_Y, C(KC_Y)),
 
-    /* 17 */ [TDL_U] = ACTION_TAP_DANCE_HOLD_SHIFT(KC_U, KC_UE),
-    /* 18 */ [TDL_O] = ACTION_TAP_DANCE_HOLD_SHIFT(KC_O, KC_OE),
+    /* 17 */ [TDL_U] = ACTION_TAP_DANCE_HOLD(KC_U, KC_UE),
+    /* 18 */ [TDL_O] = ACTION_TAP_DANCE_HOLD(KC_O, KC_OE),
 
     /* 19 */ [TDL_NUHS] = ACTION_TAP_DANCE_HOLD1(KC_NUHS, C(KC_SLSH)),
 
